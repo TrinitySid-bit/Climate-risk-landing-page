@@ -38,10 +38,10 @@ export default function CTA() {
         <div className="mt-16 pt-8 border-t border-slate-700 text-slate-400 text-sm">
           <p>© 2026 ClimateScore. Made in Victoria, Australia.</p>
           <div className="mt-2 space-x-4">
-            <a href="#" className="hover:text-white">Privacy</a>
-            <a href="#" className="hover:text-white">Terms</a>
-            <a href="mailto:hello@climatescore.com.au" className="hover:text-white">Contact</a>
-          </div>
+  <a href="/privacy" className="hover:text-white">Privacy</a>
+  <a href="/terms" className="hover:text-white">Terms</a>
+  <a href="mailto:hello@climatescore.com.au" className="hover:text-white">Contact</a>
+</div>
         </div>
       </div>
     </div>
