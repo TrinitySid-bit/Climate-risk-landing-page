@@ -51,9 +51,12 @@ export default function SampleScores() {
 
         <div className="text-center mt-12">
           <p className="text-slate-600 mb-4">Want to check your suburb?</p>
-          <button className="px-8 py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition-colors">
-            Get Early Access
-          </button>
+          <a 
+  href="#signup"
+  className="inline-block px-8 py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition-colors"
+>
+  Get Early Access
+</a>
         </div>
       </div>
     </div>

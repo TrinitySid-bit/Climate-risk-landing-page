@@ -54,11 +54,10 @@ export default function Hero() {
                 <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-green-400 border-2 border-white" />
               ))}
             </div>
-            <span className="font-medium">Join 500+ Victorians making safer property decisions</span>
-          </div>
+<span className="font-medium">Join other Victorians making safer property decisions</span>          </div>
 
           {!submitted ? (
-            <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+           <form id="signup" onSubmit={handleSubmit} className="max-w-md mx-auto">
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"

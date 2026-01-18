@@ -11,7 +11,7 @@ export default function CTA() {
           Don't Buy Blind
         </h2>
         <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-          Join the waitlist and get your first 3 property reports free when we launch.
+          Join the waitlist and get your first property report free when we launch. launch.
           Expected launch: February 2026.
         </p>
 

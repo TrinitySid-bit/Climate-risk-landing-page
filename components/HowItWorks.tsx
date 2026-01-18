@@ -45,26 +45,26 @@ export default function HowItWorks() {
           <p className="text-slate-600 mb-4">
             ClimateScore aggregates data from trusted government and scientific sources:
           </p>
-          <ul className="grid md:grid-cols-2 gap-3 text-slate-700">
-            <li className="flex items-center gap-2">
-              <span className="text-green-600">✓</span> CFA Bushfire Maps
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-600">✓</span> Bureau of Meteorology
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-600">✓</span> Melbourne Water Flood Data
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-600">✓</span> VicEmergency Historical Records
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-600">✓</span> Council Planning Overlays
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-600">✓</span> Insurance Council Data
-            </li>
-          </ul>
+         <ul className="grid md:grid-cols-2 gap-3 text-slate-700">
+  <li className="flex items-center gap-2">
+    <span className="text-green-600">✓</span> CFA Bushfire Maps
+  </li>
+  <li className="flex items-center gap-2">
+    <span className="text-green-600">✓</span> Bureau of Meteorology
+  </li>
+  <li className="flex items-center gap-2">
+    <span className="text-green-600">✓</span> Melbourne Water Flood Data
+  </li>
+  <li className="flex items-center gap-2">
+    <span className="text-green-600">✓</span> VicEmergency Records
+  </li>
+  <li className="flex items-center gap-2">
+    <span className="text-green-600">✓</span> Government Planning Data
+  </li>
+  <li className="flex items-center gap-2">
+    <span className="text-green-600">✓</span> And many more sources
+  </li>
+</ul>
         </div>
       </div>
     </div>
