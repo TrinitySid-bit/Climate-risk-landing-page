@@ -76,7 +76,7 @@ export default function Hero() {
                 </button>
               </div>
               <p className="text-sm text-slate-500 mt-3">
-                Get your first 3 property reports free • No credit card required
+                Get your first property report free when we launch • No credit card required
               </p>
             </form>
           ) : (
@@ -85,7 +85,7 @@ export default function Hero() {
                 ✓ You're on the waitlist!
               </p>
               <p className="text-green-700 mt-2">
-                We'll email you when we launch (within 2 weeks) with your 3 free reports.
+                We'll email you when we launch (within 2 weeks) with your free report.
               </p>
             </div>
           )}

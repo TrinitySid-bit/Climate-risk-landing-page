@@ -15,21 +15,21 @@ export default function CTA() {
           Expected launch: February 2026.
         </p>
 
-        <form className="max-w-md mx-auto flex gap-3">
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 px-6 py-4 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="submit"
-            className="px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-lg font-semibold hover:from-orange-700 hover:to-orange-600 transition-all shadow-lg"
-          >
-            Join Waitlist
-          </button>
-        </form>
+        <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+  <input
+    type="email"
+    placeholder="Enter your email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    className="flex-1 px-6 py-4 rounded-lg text-lg bg-white text-slate-900 border-2 border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+  />
+  <button
+    type="submit"
+    className="px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-lg font-semibold hover:from-orange-700 hover:to-orange-600 transition-all shadow-lg whitespace-nowrap"
+  >
+    Join Waitlist
+  </button>
+</form>
 
         <p className="text-slate-400 mt-6 text-sm">
           No spam. Unsubscribe anytime. We respect your privacy.
