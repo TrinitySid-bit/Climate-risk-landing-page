@@ -11,7 +11,7 @@ export default function Pricing() {
         'Full ClimateScore analysis',
         'Detailed risk breakdowns',
         'Historical incident maps',
-        'Insurance cost estimates',
+        'Insurance impact indicator',
         'Export PDF report'
       ],
       cta: 'Buy Single Report',

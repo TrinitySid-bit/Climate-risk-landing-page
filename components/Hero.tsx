@@ -54,10 +54,11 @@ export default function Hero() {
                 <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-green-400 border-2 border-white" />
               ))}
             </div>
-<span className="font-medium">Join other Victorians making safer property decisions</span>          </div>
+            <span className="font-medium">Join other Victorians making safer property decisions</span>
+          </div>
 
           {!submitted ? (
-           <form id="signup" onSubmit={handleSubmit} className="max-w-md mx-auto">
+            <form id="signup" onSubmit={handleSubmit} className="max-w-md mx-auto">
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
@@ -106,9 +107,12 @@ export default function Hero() {
                 </div>
 
                 <div className="mt-6 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600">Est. Insurance Premium:</span>
-                    <span className="font-bold text-slate-900">$3,200/year</span>
+                  <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-semibold text-orange-900">Insurance Impact:</span>
+                      <span className="font-bold text-orange-700">High</span>
+                    </div>
+                    <p className="text-xs text-orange-800">Properties in this zone may face higher premiums and difficulty obtaining coverage</p>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-slate-600">Last Incident:</span>

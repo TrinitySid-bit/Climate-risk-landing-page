@@ -11,6 +11,10 @@ export default function FAQ() {
       a: "We aggregate data from official government sources including CFA, BoM, Melbourne Water, and council planning overlays. Our algorithm is designed to be conservative—we'd rather overestimate risk than underestimate it. However, this is informational only and not a substitute for professional advice."
     },
     {
+      q: "Do you provide insurance quotes or estimates?",
+      a: "No. We provide an 'Insurance Impact' indicator (High, Moderate, Low) based on climate risk factors, but this is not an insurance quote or cost estimate. Actual insurance premiums depend on many factors including property construction, coverage level, insurer, and your personal circumstances. You must obtain quotes from licensed insurance providers."
+    },
+    {
       q: "Does this replace a building inspection?",
       a: "No. ClimateScore assesses climate and natural disaster risk, not structural condition. You should still get a professional building inspection before purchasing any property."
     },
@@ -36,7 +40,7 @@ export default function FAQ() {
     },
     {
       q: "How often is data updated?",
-      a: "We refresh our datasets monthly from government sources. After major events (fires, floods), we update within 48 hours. Your reports always reflect the latest available data."
+      a: "We refresh our datasets monthly from government sources. After major events (fires, floods), we update within 48 hours. Your reports always reflect the latest available data at the time of purchase."
     }
   ]
 
@@ -77,10 +81,10 @@ export default function FAQ() {
         <div className="mt-12 text-center">
           <p className="text-slate-600 mb-4">Still have questions?</p>
           <a 
-            href="mailto:hello@climatescore.com.au"
+            href="mailto:hello@climatescore.site"
             className="text-blue-600 font-semibold hover:text-blue-700"
           >
-            Email us at hello@climatescore.com.au
+            Email us at hello@climatescore.site
           </a>
         </div>
       </div>
