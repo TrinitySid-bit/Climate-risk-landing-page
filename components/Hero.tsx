@@ -1,172 +1,99 @@
 'use client'
 import { useState } from 'react'
-import { MapPinIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
+import { ShieldCheckIcon } from '@heroicons/react/24/outline'
+import CheckoutModal from './CheckoutModal'
 
 export default function Hero() {
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [address, setAddress] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCheckProperty = (e: React.FormEvent) => {
     e.preventDefault()
-    
-    const response = await fetch('/api/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    })
-    
-    if (response.ok) {
-      setSubmitted(true)
-    }
+    setIsModalOpen(true)
   }
 
   return (
     <div className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-blue-50 to-green-50 opacity-70" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24">
         <div className="mb-8 flex justify-center">
-          <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-medium">
+          <div className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium">
             <ShieldCheckIcon className="h-5 w-5" />
-            <span>Victoria's bushfire season has started - know your risk</span>
+            <span>Now with Planning Overlays & 10-Year Crime Data</span>
           </div>
         </div>
 
         <div className="text-center">
-          <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-6">
-            Know Your Property's
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-blue-600 to-green-600">
-              Climate Risk
-            </span>
-            Before You Buy
+          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+            <span className="text-white">Know Everything About</span>
+            <span className="block text-green-400">Your Property</span>
+            <span className="text-white">Before You Buy</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-slate-600 mb-4 max-w-3xl mx-auto">
-            Bushfire, flood, and storm risk ratings for every Victorian address.
-            <span className="block mt-2 text-lg text-slate-500">
-              Make informed decisions with Australia's first climate risk scoring platform.
+          <p className="text-xl md:text-2xl text-slate-300 mb-4 max-w-3xl mx-auto">
+            Climate risk, planning overlays, crime statistics, schools, hospitals, and transport —
+            <span className="block mt-2 text-lg text-slate-400">
+              all in one comprehensive property intelligence report.
             </span>
           </p>
 
-          <div className="flex items-center justify-center gap-2 mb-10 text-sm text-slate-500">
+          <div className="flex items-center justify-center gap-3 mb-10 text-sm text-slate-400">
             <div className="flex -space-x-2">
               {[1,2,3,4,5].map(i => (
-                <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-green-400 border-2 border-white" />
+                <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-green-600 border-2 border-slate-800" />
               ))}
+              <div className="w-8 h-8 rounded-full bg-green-600 border-2 border-slate-800 flex items-center justify-center text-white text-xs font-bold">
+                500+
+              </div>
             </div>
-            <span className="font-medium">Join other Victorians making safer property decisions</span>
+            <span className="font-medium text-slate-300">Join <strong className="text-white">500+ Victorians</strong> making smarter property decisions</span>
           </div>
 
-          {!submitted ? (
-            <form id="signup" onSubmit={handleSubmit} className="max-w-md mx-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="email"
-                  required
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 px-6 py-4 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:outline-none text-lg"
-                />
-                <button
-                  type="submit"
-                  className="px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-lg font-semibold hover:from-orange-700 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl"
-                >
-                  Get Early Access
-                </button>
-              </div>
-              <p className="text-sm text-slate-500 mt-3">
-                Get your first property report free when we launch • No credit card required
-              </p>
-            </form>
-          ) : (
-            <div className="max-w-md mx-auto bg-green-50 border-2 border-green-200 rounded-lg p-6">
-              <p className="text-green-800 font-semibold text-lg">
-                ✓ You're on the waitlist!
-              </p>
-              <p className="text-green-700 mt-2">
-                We'll email you when we launch (within 2 weeks) with your free report.
-              </p>
+          <form onSubmit={handleCheckProperty} className="max-w-xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                required
+                placeholder="Enter any Victorian address..."
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="flex-1 px-6 py-4 rounded-lg border-2 border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:border-green-500 focus:outline-none text-lg"
+              />
+              <button
+                type="submit"
+                className="px-8 py-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500 transition-all shadow-lg hover:shadow-xl"
+              >
+                Check Property
+              </button>
             </div>
-          )}
+            <p className="text-sm text-slate-400 mt-3">
+              Instant results • Professional PDF report • Delivered to your email
+            </p>
+          </form>
         </div>
 
-        <div className="mt-16 max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 border border-slate-200">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <div className="text-sm text-slate-500 mb-2">Sample Property</div>
-                <div className="text-lg font-medium text-slate-800 mb-6">
-                  123 Example Street, Eltham VIC 3095
-                </div>
-                
-                <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-xl p-8 text-white">
-                  <div className="text-7xl font-bold mb-2">42</div>
-                  <div className="text-2xl font-semibold">Elevated Risk</div>
-                  <div className="text-sm opacity-90 mt-2">ClimateScore™</div>
-                </div>
-
-                <div className="mt-6 space-y-3">
-                  <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-semibold text-orange-900">Insurance Impact:</span>
-                      <span className="font-bold text-orange-700">High</span>
-                    </div>
-                    <p className="text-xs text-orange-800">Properties in this zone may face higher premiums and difficulty obtaining coverage</p>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600">Last Incident:</span>
-                    <span className="font-medium text-orange-600">Bushfire (2020)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-sm font-semibold text-slate-700 mb-4">Risk Breakdown</div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-slate-700 font-medium">🔥 Bushfire Risk</span>
-                      <span className="font-bold text-red-600">32/100</span>
-                    </div>
-                    <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-red-500" style={{width: '32%'}} />
-                    </div>
-                    <div className="text-xs text-slate-500 mt-1">High risk zone, vegetation within 50m</div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-slate-700 font-medium">🌊 Flood Risk</span>
-                      <span className="font-bold text-blue-600">68/100</span>
-                    </div>
-                    <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500" style={{width: '68%'}} />
-                    </div>
-                    <div className="text-xs text-slate-500 mt-1">Low risk, elevated area</div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-slate-700 font-medium">⛈️ Storm Risk</span>
-                      <span className="font-bold text-yellow-600">55/100</span>
-                    </div>
-                    <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-yellow-500" style={{width: '55%'}} />
-                    </div>
-                    <div className="text-xs text-slate-500 mt-1">Moderate exposure</div>
-                  </div>
-                </div>
-
-                <button className="mt-6 w-full py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition-colors">
-                  View Full Report →
-                </button>
-              </div>
-            </div>
-          </div>
+        {/* Trust Bar */}
+        <div className="mt-16 flex flex-wrap justify-center items-center gap-4 text-sm text-slate-400">
+          <span>Trusted data from:</span>
+          <span className="text-white font-medium">CFA Victoria</span>
+          <span>•</span>
+          <span className="text-white font-medium">Bureau of Meteorology</span>
+          <span>•</span>
+          <span className="text-white font-medium">Crime Statistics Agency</span>
+          <span>•</span>
+          <span className="text-white font-medium">Vicmap Planning</span>
+          <span>•</span>
+          <span className="italic">and more being added monthly</span>
         </div>
       </div>
+
+      {/* Checkout Modal */}
+      <CheckoutModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        initialAddress={address}
+      />
     </div>
   )
 }

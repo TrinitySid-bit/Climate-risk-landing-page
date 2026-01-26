@@ -7,36 +7,36 @@ export default function FAQ() {
 
   const faqs = [
     {
-      q: "How accurate is ClimateScore?",
-      a: "We aggregate data from official government sources including CFA, BoM, Melbourne Water, and council planning overlays. Our algorithm is designed to be conservative—we'd rather overestimate risk than underestimate it. However, this is informational only and not a substitute for professional advice."
+      q: "What data does NestCheck include?",
+      a: "NestCheck reports include climate risk scores (bushfire, flood, storm), planning overlay analysis (25+ overlay types), nearby amenities (schools, hospitals, public transport), and for Premium reports, 10 years of crime statistics with trend analysis. All data comes from official Victorian government sources."
     },
     {
-      q: "Do you provide insurance quotes or estimates?",
-      a: "No. We provide an 'Insurance Impact' indicator (High, Moderate, Low) based on climate risk factors, but this is not an insurance quote or cost estimate. Actual insurance premiums depend on many factors including property construction, coverage level, insurer, and your personal circumstances. You must obtain quotes from licensed insurance providers."
+      q: "How accurate is NestCheck?",
+      a: "We aggregate data from official government sources including CFA, Bureau of Meteorology, Crime Statistics Agency, and DEECA planning data. Our scoring algorithm is designed to be conservative—we'd rather flag a potential risk than miss it. However, this is informational only and not a substitute for professional advice."
+    },
+    {
+      q: "What's the difference between Basic and Premium?",
+      a: "Basic ($29.99) includes climate risk scores, planning overlays, and nearby amenities. Premium ($39.99) adds comprehensive crime and safety analysis including 10-year crime trends, crime breakdown by category, floor-level security adjustments, and an overall Property Score combining all factors."
     },
     {
       q: "Does this replace a building inspection?",
-      a: "No. ClimateScore assesses climate and natural disaster risk, not structural condition. You should still get a professional building inspection before purchasing any property."
+      a: "No. NestCheck assesses climate risk, planning restrictions, crime statistics, and amenity access—not structural condition. You should still get a professional building inspection before purchasing any property."
     },
     {
       q: "Why only Victoria?",
-      a: "We're starting with Victoria because of the acute bushfire risk and excellent data availability. We'll expand to other states in 2026 based on demand."
+      a: "We're starting with Victoria because of the excellent data availability and acute bushfire risk in many areas. We're expanding to NSW, QLD, and other states in 2026."
     },
     {
-      q: "Will this affect property values?",
-      a: "Climate risk already affects property values through insurance costs and buyer perceptions. We're simply making this information transparent. Properties in high-risk areas often sell for 15-30% less than comparable low-risk properties."
+      q: "Who is NestCheck for?",
+      a: "NestCheck is valuable for property buyers, current homeowners wanting to understand their property's risk profile, property investors assessing portfolios, real estate professionals, and renters wanting to know what they're moving into."
     },
     {
       q: "Can real estate agents use this?",
-      a: "Yes! Our Agent tier includes white-label reports you can provide to clients, positioning yourself as a trusted advisor. It's a competitive advantage in today's market."
+      a: "Absolutely! We offer commercial plans with unlimited reports and API access for agencies, buyer's agents, mortgage brokers, and property portals. Contact commercial@nestcheck.com.au for details."
     },
     {
       q: "What if my property has a bad score?",
-      a: "A lower score doesn't mean you shouldn't buy—it means you should be informed. Many people happily live in higher-risk areas with proper preparation, appropriate insurance, and bushfire plans. Knowledge is power."
-    },
-    {
-      q: "Will you sell my data?",
-      a: "Never. We don't sell user data. We may share anonymized, aggregated statistics (e.g., 'searches in bushfire zones increased 20%') but never individual addresses or user information."
+      a: "A lower score doesn't mean you shouldn't buy—it means you should be informed. Many people happily live in higher-risk areas with proper preparation, appropriate insurance, and emergency plans. Knowledge is power."
     },
     {
       q: "How often is data updated?",
@@ -81,10 +81,10 @@ export default function FAQ() {
         <div className="mt-12 text-center">
           <p className="text-slate-600 mb-4">Still have questions?</p>
           <a 
-            href="mailto:hello@climatescore.site"
-            className="text-blue-600 font-semibold hover:text-blue-700"
+            href="mailto:hello@nestcheck.com.au"
+            className="text-green-600 font-semibold hover:text-green-700"
           >
-            Email us at hello@climatescore.site
+            Email us at hello@nestcheck.com.au
           </a>
         </div>
       </div>
