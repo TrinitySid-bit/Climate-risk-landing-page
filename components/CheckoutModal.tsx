@@ -38,12 +38,11 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
   const addressInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<any>(null);
 
-// Sync address when modal opens or initialAddress changes
+  // Sync address when modal opens or initialAddress changes
   useEffect(() => {
     if (isOpen) {
       setAddress(initialAddress);
     } else {
-      // Reset form when modal closes
       setStep(1);
       setFloor('');
       setReportType('premium');
@@ -143,7 +142,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-auto p-6 relative" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl leading-none">
-          Ã—
+          X
         </button>
 
         {/* Progress */}
@@ -162,7 +161,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
         {step === 1 && (
           <div>
             <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Enter Property Details</h2>
-            <p className="text-slate-500 text-center text-sm mb-6">We'll generate a comprehensive report for this property</p>
+            <p className="text-slate-500 text-center text-sm mb-6">We will generate a comprehensive report for this property</p>
 
             <div className="mb-4">
               <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -231,10 +230,10 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
                 <h3 className="font-bold text-slate-800">Basic</h3>
                 <p className="text-2xl font-bold text-[#22c55e] my-2">$29.99</p>
                 <ul className="text-xs text-slate-600 space-y-1">
-                  <li>âœ“ Climate Risk</li>
-                  <li>âœ“ Planning Overlays</li>
-                  <li>âœ“ Amenities</li>
-                  <li className="text-slate-400">âœ— Crime & Safety</li>
+                  <li>+ Climate Risk</li>
+                  <li>+ Planning Overlays</li>
+                  <li>+ Amenities</li>
+                  <li className="text-slate-400">- Crime and Safety</li>
                 </ul>
               </div>
 
@@ -246,10 +245,10 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
                 <h3 className="font-bold text-slate-800">Premium</h3>
                 <p className="text-2xl font-bold text-[#22c55e] my-2">$39.99</p>
                 <ul className="text-xs text-slate-600 space-y-1">
-                  <li>âœ“ Everything in Basic</li>
-                  <li>âœ“ Crime & Safety</li>
-                  <li>âœ“ 10-Year Trends</li>
-                  <li>âœ“ Overall Score</li>
+                  <li>+ Everything in Basic</li>
+                  <li>+ Crime and Safety</li>
+                  <li>+ 10-Year Trends</li>
+                  <li>+ Overall Score</li>
                 </ul>
               </div>
             </div>
@@ -338,7 +337,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
             </div>
 
             <p className="text-center text-xs text-slate-400 mt-4">
-              ðŸ”’ Secure payment powered by Stripe
+              Secure payment powered by Stripe
             </p>
           </div>
         )}
