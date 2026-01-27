@@ -38,14 +38,12 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
   const addressInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<any>(null);
 
-  // KEY FIX: Always update address when initialAddress prop changes
+// Sync address when modal opens or initialAddress changes
   useEffect(() => {
-    setAddress(initialAddress);
-  }, [initialAddress]);
-
-  // Reset form when modal closes
-  useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      setAddress(initialAddress);
+    } else {
+      // Reset form when modal closes
       setStep(1);
       setFloor('');
       setReportType('premium');
@@ -54,7 +52,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
       setAgreedToTerms(false);
       autocompleteRef.current = null;
     }
-  }, [isOpen]);
+  }, [isOpen, initialAddress]);
 
   // Initialize Google Places Autocomplete
   useEffect(() => {
