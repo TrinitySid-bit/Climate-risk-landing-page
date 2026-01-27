@@ -14,15 +14,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
-      
-      {/* Disclaimer */}
-      <div className="bg-amber-50 border-b-2 border-amber-200 px-4 py-3 text-center text-sm text-amber-900">
-        ⚠️ <strong>Disclaimer:</strong> NestCheck provides informational property intelligence only and is not a substitute for professional advice. 
-        We do not provide insurance quotes, financial advice, or legal advice. Scores are based on publicly available government data. 
-        It is the responsibility of the purchaser to review the primary data sources we aggregate from. 
-        Always conduct proper due diligence before making property decisions.{' '}
-        <Link href="/terms" className="underline hover:text-amber-700">Read full terms</Link>
-      </div>
 
       {/* Hero Section */}
       <section className="bg-[#0c1929]">
@@ -189,7 +180,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[
               { icon: '🏠', title: 'Property Buyers', desc: 'Know risks and overlays before signing.' },
-              { icon: '🔑', title: 'Homeowners', desc: 'Understand your property\'s risk profile.' },
+              { icon: '🔑', title: 'Homeowners', desc: "Understand your property's risk profile." },
               { icon: '📊', title: 'Investors', desc: 'Assess risk across your portfolio.' },
               { icon: '🏢', title: 'Real Estate Agents', desc: 'Data-backed insights for clients.' },
               { icon: '📋', title: 'Portfolio Managers', desc: 'Monitor risk across properties.' },
@@ -481,6 +472,15 @@ export default function Home() {
           <p className="text-slate-500 text-sm">Join 500+ Victorians who checked before they nested</p>
         </div>
       </section>
+
+      {/* Disclaimer */}
+      <div className="bg-amber-50 border-t-2 border-amber-200 px-4 py-3 text-center text-sm text-amber-900">
+        <strong>Disclaimer:</strong> NestCheck provides informational property intelligence only and is not a substitute for professional advice. 
+        We do not provide insurance quotes, financial advice, or legal advice. Scores are based on publicly available government data. 
+        It is the responsibility of the purchaser to review the primary data sources we aggregate from. 
+        Always conduct proper due diligence before making property decisions.{' '}
+        <Link href="/terms" className="underline hover:text-amber-700">Read full terms</Link>
+      </div>
 
       {/* Footer */}
       <footer className="py-8 px-4 bg-[#070d14]">
