@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react'
 import CheckoutModal from '@/components/CheckoutModal'
 import Link from 'next/link'
 
