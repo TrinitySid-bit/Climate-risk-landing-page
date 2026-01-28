@@ -12,7 +12,7 @@ const PRODUCTS = {
   },
   premium: {
     name: 'NestCheck Property Report - Premium',
-    price: 3999,
+    price: 2999,  // Changed from 3999 to 2999
     description: 'Complete property intelligence including crime & safety analysis',
   },
 };
