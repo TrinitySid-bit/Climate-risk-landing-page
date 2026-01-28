@@ -17,6 +17,7 @@ declare global {
   interface Window {
     google: any;
     initGooglePlacesFree: () => void;
+    googleMapsLoaded: boolean;
   }
 }
 
@@ -30,6 +31,7 @@ export default function Home() {
   const [freeLoading, setFreeLoading] = useState(false)
   const [freeSuccess, setFreeSuccess] = useState(false)
   const [freeError, setFreeError] = useState('')
+  const [googleLoaded, setGoogleLoaded] = useState(false)
   
   const freeAddressInputRef = useRef<HTMLInputElement>(null)
   const freeAutocompleteRef = useRef<any>(null)
@@ -39,63 +41,84 @@ export default function Home() {
     setIsModalOpen(true)
   }
 
-  // Initialize Google Places for free form
+  // IMPROVED: Google Places loader with better reliability
   useEffect(() => {
-    if (!showFreeForm || !freeAddressInputRef.current) return;
-    
+    if (!showFreeForm) {
+      if (freeAutocompleteRef.current && window.google) {
+        window.google.maps.event.clearInstanceListeners(freeAutocompleteRef.current);
+      }
+      freeAutocompleteRef.current = null;
+      return;
+    }
+
     const initAutocomplete = () => {
       if (!window.google || !window.google.maps || !window.google.maps.places) return;
       if (freeAutocompleteRef.current) return;
+      if (!freeAddressInputRef.current) return;
       
-      freeAutocompleteRef.current = new window.google.maps.places.Autocomplete(freeAddressInputRef.current, {
-        componentRestrictions: { country: 'au' },
-        fields: ['formatted_address', 'address_components'],
-        types: ['address'],
-      });
+      try {
+        freeAutocompleteRef.current = new window.google.maps.places.Autocomplete(freeAddressInputRef.current, {
+          componentRestrictions: { country: 'au' },
+          fields: ['formatted_address', 'address_components'],
+          types: ['address'],
+        });
 
-      freeAutocompleteRef.current.addListener('place_changed', () => {
-        const place = freeAutocompleteRef.current?.getPlace();
-        if (place?.formatted_address) {
-          setFreeAddress(place.formatted_address);
-          
-          const state = place.address_components?.find(
-            (c: any) => c.types.includes('administrative_area_level_1')
-          );
-          
-          if (state?.short_name !== 'VIC') {
-            setFreeError('Please enter a Victorian address. We currently only cover Victoria.');
-          } else {
-            setFreeError('');
+        freeAutocompleteRef.current.addListener('place_changed', () => {
+          const place = freeAutocompleteRef.current?.getPlace();
+          if (place?.formatted_address) {
+            setFreeAddress(place.formatted_address);
+            
+            const state = place.address_components?.find(
+              (c: any) => c.types.includes('administrative_area_level_1')
+            );
+            
+            if (state?.short_name !== 'VIC') {
+              setFreeError('Please enter a Victorian address. We currently only cover Victoria.');
+            } else {
+              setFreeError('');
+            }
           }
-        }
-      });
+        });
+        
+        setGoogleLoaded(true);
+      } catch (err) {
+        console.error('Error initializing autocomplete:', err);
+      }
     };
 
     if (window.google && window.google.maps && window.google.maps.places) {
-      initAutocomplete();
+      setTimeout(initAutocomplete, 100);
       return;
     }
 
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    if (!apiKey) return;
-
-    if (!document.getElementById('google-maps-script')) {
-      window.initGooglePlacesFree = initAutocomplete;
-      const script = document.createElement('script');
-      script.id = 'google-maps-script';
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGooglePlacesFree`;
-      script.async = true;
-      document.head.appendChild(script);
-    } else {
-      initAutocomplete();
+    if (!apiKey) {
+      console.error('Google Maps API key not found');
+      return;
     }
-  }, [showFreeForm]);
 
-  // Reset free form when closed
-  useEffect(() => {
-    if (!showFreeForm) {
-      freeAutocompleteRef.current = null;
+    if (document.getElementById('google-maps-script')) {
+      const checkLoaded = setInterval(() => {
+        if (window.google && window.google.maps && window.google.maps.places) {
+          clearInterval(checkLoaded);
+          setTimeout(initAutocomplete, 100);
+        }
+      }, 100);
+      setTimeout(() => clearInterval(checkLoaded), 10000);
+      return;
     }
+
+    window.initGooglePlacesFree = () => {
+      window.googleMapsLoaded = true;
+      setTimeout(initAutocomplete, 100);
+    };
+    
+    const script = document.createElement('script');
+    script.id = 'google-maps-script';
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGooglePlacesFree`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
   }, [showFreeForm]);
 
   const handleFreeReport = async (e: React.FormEvent) => {
@@ -205,6 +228,9 @@ export default function Home() {
                       autoComplete="off"
                       required
                     />
+                    <p className="text-xs text-slate-400 mt-1">
+                      {googleLoaded ? 'Start typing to see suggestions' : 'Loading address search...'}
+                    </p>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-1">
@@ -335,31 +361,20 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Search Box */}
-            <div className="max-w-xl mx-auto mb-4">
-              <div className="bg-white rounded-xl overflow-hidden shadow-2xl">
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Enter any Victorian address..."
-                  className="w-full px-5 py-4 text-base md:text-lg text-slate-800 placeholder-slate-400 border-none outline-none"
-                />
-                <div className="flex gap-2 p-2 bg-slate-50 border-t border-slate-100">
-                  <button 
-                    onClick={() => { if (address) { setFreeAddress(address); setShowFreeForm(true); } else { setShowFreeForm(true); } }}
-                    className="flex-1 py-3 border-2 border-[#22c55e] text-[#22c55e] rounded-lg font-bold hover:bg-green-50 transition"
-                  >
-                    Get FREE Report
-                  </button>
-                  <button 
-                    onClick={() => openCheckout(address)}
-                    className="flex-1 py-3 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-[#16a34a] transition"
-                  >
-                    Get Premium - $29.99
-                  </button>
-                </div>
-              </div>
+            {/* CHANGED: Two buttons instead of search box */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">
+              <button 
+                onClick={() => setShowFreeForm(true)}
+                className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white bg-transparent rounded-xl font-bold text-lg hover:bg-white hover:text-[#0c1929] transition"
+              >
+                Get FREE Report
+              </button>
+              <button 
+                onClick={() => openCheckout()}
+                className="w-full sm:w-auto px-8 py-4 bg-[#22c55e] text-white rounded-xl font-bold text-lg hover:bg-[#16a34a] transition"
+              >
+                Get Premium - $29.99
+              </button>
             </div>
 
             <p className="text-slate-500 text-sm">
@@ -480,7 +495,6 @@ export default function Home() {
             </div>
 
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="absolute -top-2.5 right-4 bg-slate-500 text-white text-xs font-bold px-3 py-1 rounded-full hidden">FREE</div>
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-xl mb-4">📋</div>
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Planning Overlays</h3>
               <p className="text-slate-500 text-sm mb-3">Know what restrictions apply — heritage, environmental, development.</p>
@@ -645,7 +659,7 @@ export default function Home() {
               </ul>
 
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-xs text-green-800">
-                <strong>Why Premium?</strong> Climate & crime data reveals what photos can't. Protect your investment and your family.
+                <strong>Why Premium?</strong> Photos don't show flood zones, bushfire ratings, or crime hotspots. Premium reveals what agents won't tell you — protect your investment and your family.
               </div>
 
               <button
