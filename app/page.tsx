@@ -219,23 +219,34 @@ export default function Home() {
             </div>
 
             {/* Search Box */}
-            <form onSubmit={(e) => { e.preventDefault(); openCheckout(address); }} className="max-w-xl mx-auto mb-4">
-              <div className="flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden shadow-2xl">
+            <div className="max-w-xl mx-auto mb-4">
+              <div className="bg-white rounded-xl overflow-hidden shadow-2xl">
                 <input
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Enter any Victorian address..."
-                  className="flex-1 px-5 py-4 text-base md:text-lg text-slate-800 placeholder-slate-400 border-none outline-none"
+                  className="w-full px-5 py-4 text-base md:text-lg text-slate-800 placeholder-slate-400 border-none outline-none"
                 />
-                <button type="submit" className="bg-[#22c55e] text-white px-6 py-4 font-bold hover:bg-[#16a34a] transition whitespace-nowrap sm:m-1.5 sm:rounded-lg">
-                  Check Property
-                </button>
+                <div className="flex gap-2 p-2 bg-slate-50 border-t border-slate-100">
+                  <button 
+                    onClick={() => { if (address) { setFreeAddress(address); setShowFreeForm(true); } else { setShowFreeForm(true); } }}
+                    className="flex-1 py-3 border-2 border-[#22c55e] text-[#22c55e] rounded-lg font-bold hover:bg-green-50 transition"
+                  >
+                    Get FREE Report
+                  </button>
+                  <button 
+                    onClick={() => openCheckout(address)}
+                    className="flex-1 py-3 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-[#16a34a] transition"
+                  >
+                    Get Premium - $29.99
+                  </button>
+                </div>
               </div>
-            </form>
+            </div>
 
             <p className="text-slate-500 text-sm">
-              Instant results • Professional PDF report • Delivered to your email
+              FREE: Schools, transport, overlays • PREMIUM: + Climate risk + Crime data
             </p>
           </div>
         </div>
@@ -280,7 +291,7 @@ export default function Home() {
               <div className="text-slate-400 text-xs md:text-sm">Properties with planning overlays</div>
             </div>
             <div className="bg-[#22c55e] rounded-xl p-5 md:p-6 text-center">
-              <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">5 minutes</div>
+              <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">5 min</div>
               <div className="text-green-100 text-xs md:text-sm">To get insights that save thousands</div>
             </div>
           </div>
