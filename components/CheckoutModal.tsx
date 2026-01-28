@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 
@@ -29,7 +29,6 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
   const [step, setStep] = useState(1);
   const [address, setAddress] = useState(initialAddress);
   const [floor, setFloor] = useState('');
-  const [reportType, setReportType] = useState<'basic' | 'premium'>('premium');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -45,7 +44,6 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
     } else {
       setStep(1);
       setFloor('');
-      setReportType('premium');
       setEmail('');
       setError('');
       setAgreedToTerms(false);
@@ -118,7 +116,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address, floor, reportType, email }),
+        body: JSON.stringify({ address, floor, reportType: 'premium', email }),
       });
 
       const data = await response.json();
@@ -142,17 +140,17 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-auto p-6 relative" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl leading-none">
-          X
+          ×
         </button>
 
-        {/* Progress */}
+        {/* Progress - Now 2 steps */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          {[1, 2, 3].map((i) => (
+          {[1, 2].map((i) => (
             <div key={i} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${step >= i ? 'bg-[#22c55e] text-white' : 'bg-slate-200 text-slate-500'}`}>
                 {i}
               </div>
-              {i < 3 && <div className={`w-8 h-0.5 ${step > i ? 'bg-[#22c55e]' : 'bg-slate-200'}`}></div>}
+              {i < 2 && <div className={`w-12 h-0.5 ${step > i ? 'bg-[#22c55e]' : 'bg-slate-200'}`}></div>}
             </div>
           ))}
         </div>
@@ -161,7 +159,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
         {step === 1 && (
           <div>
             <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Enter Property Details</h2>
-            <p className="text-slate-500 text-center text-sm mb-6">We will generate a comprehensive report for this property</p>
+            <p className="text-slate-500 text-center text-sm mb-6">We'll generate a comprehensive report for this property</p>
 
             <div className="mb-4">
               <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -196,7 +194,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
                 ))}
               </select>
               <p className="text-xs text-slate-500 mt-1">
-                <strong>Required:</strong> Floor level significantly affects flood risk, storm damage, and safety scores
+                <strong>Required:</strong> Floor level affects flood risk, storm damage, and safety scores
               </p>
             </div>
 
@@ -216,59 +214,27 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
           </div>
         )}
 
-        {/* Step 2: Select Plan */}
+        {/* Step 2: Email & Checkout */}
         {step === 2 && (
           <div>
-            <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Choose Your Report</h2>
-            <p className="text-slate-500 text-center text-sm mb-6">Select the level of detail you need</p>
+            <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Complete Your Order</h2>
+            <p className="text-slate-500 text-center text-sm mb-6">Enter your email to receive your Premium report</p>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div
-                onClick={() => setReportType('basic')}
-                className={`border-2 rounded-xl p-4 cursor-pointer transition ${reportType === 'basic' ? 'border-[#22c55e] bg-green-50' : 'border-slate-200 hover:border-slate-300'}`}
-              >
-                <h3 className="font-bold text-slate-800">Basic</h3>
-                <p className="text-2xl font-bold text-[#22c55e] my-2">$29.99</p>
-                <ul className="text-xs text-slate-600 space-y-1">
-                  <li>+ Climate Risk</li>
-                  <li>+ Planning Overlays</li>
-                  <li>+ Amenities</li>
-                  <li className="text-slate-400">- Crime and Safety</li>
-                </ul>
+            {/* What's Included */}
+            <div className="bg-green-50 border-2 border-[#22c55e] rounded-xl p-4 mb-4">
+              <div className="flex justify-between items-center mb-3">
+                <span className="font-bold text-[#0c1929]">Premium Report</span>
+                <span className="text-2xl font-bold text-[#22c55e]">$29.99</span>
               </div>
-
-              <div
-                onClick={() => setReportType('premium')}
-                className={`border-2 rounded-xl p-4 cursor-pointer transition relative ${reportType === 'premium' ? 'border-[#22c55e] bg-green-50' : 'border-slate-200 hover:border-slate-300'}`}
-              >
-                <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#22c55e] text-white text-xs font-bold px-2 py-0.5 rounded-full">RECOMMENDED</span>
-                <h3 className="font-bold text-slate-800">Premium</h3>
-                <p className="text-2xl font-bold text-[#22c55e] my-2">$39.99</p>
-                <ul className="text-xs text-slate-600 space-y-1">
-                  <li>+ Everything in Basic</li>
-                  <li>+ Crime and Safety</li>
-                  <li>+ 10-Year Trends</li>
-                  <li>+ Overall Score</li>
-                </ul>
-              </div>
+              <ul className="text-sm text-slate-600 space-y-1">
+                <li>✓ Climate Risk Scores (Bushfire, Flood, Storm)</li>
+                <li>✓ 25+ Planning Overlays</li>
+                <li>✓ Crime & Safety Analysis</li>
+                <li>✓ 10-Year Crime Trends</li>
+                <li>✓ Schools, Hospitals, Transport</li>
+                <li>✓ Air Quality Analysis</li>
+              </ul>
             </div>
-
-            <div className="flex gap-3">
-              <button onClick={() => setStep(1)} className="flex-1 py-3 border-2 border-slate-200 text-slate-600 rounded-lg font-semibold hover:bg-slate-50 transition">
-                Back
-              </button>
-              <button onClick={() => setStep(3)} className="flex-1 py-3 bg-[#22c55e] text-white rounded-lg font-semibold hover:bg-[#16a34a] transition">
-                Continue
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Email & Checkout */}
-        {step === 3 && (
-          <div>
-            <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Almost There!</h2>
-            <p className="text-slate-500 text-center text-sm mb-6">Enter your email to receive your report</p>
 
             {/* Summary */}
             <div className="bg-slate-50 rounded-xl p-4 mb-4 text-sm">
@@ -276,17 +242,9 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
                 <span className="text-slate-500">Property:</span>
                 <span className="text-slate-800 font-medium text-right max-w-[200px] truncate">{address}</span>
               </div>
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between">
                 <span className="text-slate-500">Floor:</span>
                 <span className="text-slate-800">{FLOOR_OPTIONS.find(f => f.value === floor)?.label || 'Not selected'}</span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-slate-500">Report:</span>
-                <span className="text-slate-800">{reportType === 'premium' ? 'Premium' : 'Basic'}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-slate-200">
-                <span className="text-slate-800 font-semibold">Total:</span>
-                <span className="text-[#22c55e] font-bold text-lg">${reportType === 'premium' ? '39.99' : '29.99'} AUD</span>
               </div>
             </div>
 
@@ -324,7 +282,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
             )}
 
             <div className="flex gap-3">
-              <button onClick={() => setStep(2)} className="flex-1 py-3 border-2 border-slate-200 text-slate-600 rounded-lg font-semibold hover:bg-slate-50 transition">
+              <button onClick={() => setStep(1)} className="flex-1 py-3 border-2 border-slate-200 text-slate-600 rounded-lg font-semibold hover:bg-slate-50 transition">
                 Back
               </button>
               <button
@@ -332,12 +290,12 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
                 disabled={loading || !email.includes('@')}
                 className="flex-1 py-3 bg-[#22c55e] text-white rounded-lg font-semibold hover:bg-[#16a34a] transition disabled:bg-slate-300 disabled:cursor-not-allowed"
               >
-                {loading ? 'Processing...' : `Pay $${reportType === 'premium' ? '39.99' : '29.99'}`}
+                {loading ? 'Processing...' : 'Pay $29.99'}
               </button>
             </div>
 
             <p className="text-center text-xs text-slate-400 mt-4">
-              Secure payment powered by Stripe
+              🔒 Secure payment powered by Stripe
             </p>
           </div>
         )}
