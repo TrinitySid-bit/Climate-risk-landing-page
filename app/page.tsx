@@ -220,7 +220,7 @@ export default function Home() {
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <p className="text-xs text-slate-500 mt-1">Floor level affects flood risk calculations</p>
+                    <p className="text-xs text-slate-500 mt-1">Floor level affects risk calculations</p>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-1">
