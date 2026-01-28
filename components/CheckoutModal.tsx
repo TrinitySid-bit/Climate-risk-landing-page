@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 const FLOOR_OPTIONS = [
   { value: '', label: '-- Select floor level --' },
@@ -21,9 +21,48 @@ interface CheckoutModalProps {
 declare global {
   interface Window {
     google: any;
-    initGooglePlaces: () => void;
+    googleMapsLoaded: boolean;
+    googleMapsCallbacks: (() => void)[];
   }
 }
+
+// Shared Google Maps loader
+const loadGoogleMaps = (callback: () => void) => {
+  if (window.google?.maps?.places) {
+    callback();
+    return;
+  }
+
+  if (!window.googleMapsCallbacks) {
+    window.googleMapsCallbacks = [];
+  }
+
+  window.googleMapsCallbacks.push(callback);
+
+  if (document.getElementById('google-maps-script')) {
+    return;
+  }
+
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (!apiKey) {
+    console.error('Google Maps API key not found');
+    return;
+  }
+
+  (window as any).initGoogleMapsCallback = () => {
+    window.googleMapsLoaded = true;
+    window.googleMapsCallbacks.forEach(cb => cb());
+    window.googleMapsCallbacks = [];
+  };
+
+  const script = document.createElement('script');
+  script.id = 'google-maps-script';
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMapsCallback`;
+  script.async = true;
+  script.defer = true;
+  script.onerror = () => console.error('Failed to load Google Maps');
+  document.head.appendChild(script);
+};
 
 export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: CheckoutModalProps) {
   const [step, setStep] = useState(1);
@@ -33,37 +72,25 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [googleLoaded, setGoogleLoaded] = useState(false);
   
   const addressInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<any>(null);
 
-  // Sync address when modal opens or initialAddress changes
-  useEffect(() => {
-    if (isOpen) {
-      setAddress(initialAddress);
-    } else {
-      setStep(1);
-      setFloor('');
-      setEmail('');
-      setError('');
-      setAgreedToTerms(false);
-      autocompleteRef.current = null;
-    }
-  }, [isOpen, initialAddress]);
+  // Initialize autocomplete
+  const initAutocomplete = useCallback(() => {
+    if (!addressInputRef.current || autocompleteRef.current) return;
+    if (!window.google?.maps?.places) return;
 
-  // Initialize Google Places Autocomplete
-  useEffect(() => {
-    if (!isOpen || step !== 1 || !addressInputRef.current) return;
-    
-    const initAutocomplete = () => {
-      if (!window.google || !window.google.maps || !window.google.maps.places) return;
-      if (autocompleteRef.current) return;
-      
-      autocompleteRef.current = new window.google.maps.places.Autocomplete(addressInputRef.current, {
-        componentRestrictions: { country: 'au' },
-        fields: ['formatted_address', 'address_components'],
-        types: ['address'],
-      });
+    try {
+      autocompleteRef.current = new window.google.maps.places.Autocomplete(
+        addressInputRef.current,
+        {
+          componentRestrictions: { country: 'au' },
+          fields: ['formatted_address', 'address_components'],
+          types: ['address'],
+        }
+      );
 
       autocompleteRef.current.addListener('place_changed', () => {
         const place = autocompleteRef.current?.getPlace();
@@ -81,25 +108,41 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
           }
         }
       });
-    };
+    } catch (err) {
+      console.error('Error initializing autocomplete:', err);
+    }
+  }, []);
 
-    if (window.google && window.google.maps && window.google.maps.places) {
-      initAutocomplete();
+  // Reset and load Google Maps when modal opens
+  useEffect(() => {
+    if (!isOpen) {
+      // Cleanup when modal closes
+      if (autocompleteRef.current && window.google) {
+        window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+      }
+      autocompleteRef.current = null;
+      setStep(1);
+      setAddress(initialAddress);
+      setFloor('');
+      setEmail('');
+      setError('');
+      setAgreedToTerms(false);
       return;
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    if (!apiKey) return;
+    // Load Google Maps when modal opens
+    loadGoogleMaps(() => {
+      setGoogleLoaded(true);
+      setTimeout(initAutocomplete, 100);
+    });
+  }, [isOpen, initialAddress, initAutocomplete]);
 
-    if (!document.getElementById('google-maps-script')) {
-      window.initGooglePlaces = initAutocomplete;
-      const script = document.createElement('script');
-      script.id = 'google-maps-script';
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGooglePlaces`;
-      script.async = true;
-      document.head.appendChild(script);
+  // Re-init if step changes to 1
+  useEffect(() => {
+    if (isOpen && step === 1 && googleLoaded && addressInputRef.current && !autocompleteRef.current) {
+      setTimeout(initAutocomplete, 100);
     }
-  }, [isOpen, step]);
+  }, [isOpen, step, googleLoaded, initAutocomplete]);
 
   if (!isOpen) return null;
 
@@ -159,7 +202,7 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
         {step === 1 && (
           <div>
             <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Enter Property Details</h2>
-            <p className="text-slate-500 text-center text-sm mb-6">We'll generate a comprehensive report for this property</p>
+            <p className="text-slate-500 text-center text-sm mb-6">We'll generate a comprehensive Premium report for this property</p>
 
             <div className="mb-4">
               <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -177,7 +220,9 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] focus:outline-none text-slate-800"
                 autoComplete="off"
               />
-              <p className="text-xs text-slate-400 mt-1">Enter any Victorian address</p>
+              <p className="text-xs text-slate-400 mt-1">
+                {googleLoaded ? 'Start typing to see suggestions' : 'Loading address search...'}
+              </p>
             </div>
 
             <div className="mb-6">

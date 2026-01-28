@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import CheckoutModal from '@/components/CheckoutModal'
 import Link from 'next/link'
 
@@ -16,13 +16,56 @@ const FLOOR_OPTIONS = [
 declare global {
   interface Window {
     google: any;
-    initGooglePlacesFree: () => void;
+    googleMapsLoaded: boolean;
+    googleMapsCallbacks: (() => void)[];
   }
 }
 
+// Shared Google Maps loader - ensures script loads once and handles race conditions
+const loadGoogleMaps = (callback: () => void) => {
+  // If already loaded, call immediately
+  if (window.google?.maps?.places) {
+    callback();
+    return;
+  }
+
+  // Initialize callback queue if needed
+  if (!window.googleMapsCallbacks) {
+    window.googleMapsCallbacks = [];
+  }
+
+  // Add to queue
+  window.googleMapsCallbacks.push(callback);
+
+  // If script already loading, just wait
+  if (document.getElementById('google-maps-script')) {
+    return;
+  }
+
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (!apiKey) {
+    console.error('Google Maps API key not found');
+    return;
+  }
+
+  // Create global callback
+  (window as any).initGoogleMapsCallback = () => {
+    window.googleMapsLoaded = true;
+    window.googleMapsCallbacks.forEach(cb => cb());
+    window.googleMapsCallbacks = [];
+  };
+
+  const script = document.createElement('script');
+  script.id = 'google-maps-script';
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMapsCallback`;
+  script.async = true;
+  script.defer = true;
+  script.onerror = () => console.error('Failed to load Google Maps');
+  document.head.appendChild(script);
+};
+
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [address, setAddress] = useState('')
   const [showFreeForm, setShowFreeForm] = useState(false)
   const [freeEmail, setFreeEmail] = useState('')
   const [freeAddress, setFreeAddress] = useState('')
@@ -30,28 +73,25 @@ export default function Home() {
   const [freeLoading, setFreeLoading] = useState(false)
   const [freeSuccess, setFreeSuccess] = useState(false)
   const [freeError, setFreeError] = useState('')
+  const [googleLoaded, setGoogleLoaded] = useState(false)
   
   const freeAddressInputRef = useRef<HTMLInputElement>(null)
   const freeAutocompleteRef = useRef<any>(null)
 
-  const openCheckout = (addr?: string) => {
-    if (addr) setAddress(addr)
-    setIsModalOpen(true)
-  }
+  // Initialize autocomplete when modal opens and Google is ready
+  const initFreeAutocomplete = useCallback(() => {
+    if (!freeAddressInputRef.current || freeAutocompleteRef.current) return;
+    if (!window.google?.maps?.places) return;
 
-  // Initialize Google Places for free form
-  useEffect(() => {
-    if (!showFreeForm || !freeAddressInputRef.current) return;
-    
-    const initAutocomplete = () => {
-      if (!window.google || !window.google.maps || !window.google.maps.places) return;
-      if (freeAutocompleteRef.current) return;
-      
-      freeAutocompleteRef.current = new window.google.maps.places.Autocomplete(freeAddressInputRef.current, {
-        componentRestrictions: { country: 'au' },
-        fields: ['formatted_address', 'address_components'],
-        types: ['address'],
-      });
+    try {
+      freeAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+        freeAddressInputRef.current,
+        {
+          componentRestrictions: { country: 'au' },
+          fields: ['formatted_address', 'address_components'],
+          types: ['address'],
+        }
+      );
 
       freeAutocompleteRef.current.addListener('place_changed', () => {
         const place = freeAutocompleteRef.current?.getPlace();
@@ -69,34 +109,35 @@ export default function Home() {
           }
         }
       });
-    };
+    } catch (err) {
+      console.error('Error initializing autocomplete:', err);
+    }
+  }, []);
 
-    if (window.google && window.google.maps && window.google.maps.places) {
-      initAutocomplete();
+  // Load Google Maps when free form opens
+  useEffect(() => {
+    if (!showFreeForm) {
+      // Cleanup when modal closes
+      if (freeAutocompleteRef.current && window.google) {
+        window.google.maps.event.clearInstanceListeners(freeAutocompleteRef.current);
+      }
+      freeAutocompleteRef.current = null;
       return;
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    if (!apiKey) return;
+    loadGoogleMaps(() => {
+      setGoogleLoaded(true);
+      // Small delay to ensure input is mounted
+      setTimeout(initFreeAutocomplete, 100);
+    });
+  }, [showFreeForm, initFreeAutocomplete]);
 
-    if (!document.getElementById('google-maps-script')) {
-      window.initGooglePlacesFree = initAutocomplete;
-      const script = document.createElement('script');
-      script.id = 'google-maps-script';
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGooglePlacesFree`;
-      script.async = true;
-      document.head.appendChild(script);
-    } else {
-      initAutocomplete();
-    }
-  }, [showFreeForm]);
-
-  // Reset free form when closed
+  // Re-init if input ref changes
   useEffect(() => {
-    if (!showFreeForm) {
-      freeAutocompleteRef.current = null;
+    if (showFreeForm && googleLoaded && freeAddressInputRef.current && !freeAutocompleteRef.current) {
+      initFreeAutocomplete();
     }
-  }, [showFreeForm]);
+  }, [showFreeForm, googleLoaded, initFreeAutocomplete]);
 
   const handleFreeReport = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -121,7 +162,8 @@ export default function Home() {
         setFreeEmail('')
         setFreeFloor('')
       } else {
-        setFreeError('Something went wrong. Please try again.')
+        const data = await response.json().catch(() => ({}))
+        setFreeError(data.detail || 'Something went wrong. Please try again.')
       }
     } catch (error) {
       console.error('Error:', error)
@@ -131,16 +173,22 @@ export default function Home() {
     }
   }
 
+  const closeFreeForm = () => {
+    setShowFreeForm(false)
+    setFreeSuccess(false)
+    setFreeError('')
+  }
+
   const canSubmitFree = freeAddress.length >= 10 && freeEmail.includes('@') && freeFloor !== '' && !freeError
 
   return (
     <main className="min-h-screen" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
 
-      {/* FREE REPORT BANNER - ATTENTION VICTORIANS */}
+      {/* FREE REPORT BANNER - ATTN VICTORIANS */}
       <div className="bg-gradient-to-r from-[#22c55e] to-[#16a34a] px-4 py-4 text-center">
         <div className="max-w-4xl mx-auto">
           <p className="text-white font-bold text-lg md:text-xl mb-1">
-            🏠 ATTENTION Victorians: Get a FREE Property Report!
+            🏠 ATTN Victorians: Get a FREE Property Report!
           </p>
           <p className="text-green-100 text-sm mb-3">
             Schools, hospitals, transport, planning overlays & air quality - completely free. No credit card required.
@@ -157,9 +205,9 @@ export default function Home() {
       {/* FREE REPORT MODAL */}
       {showFreeForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 relative">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 relative" onClick={(e) => e.stopPropagation()}>
             <button 
-              onClick={() => { setShowFreeForm(false); setFreeSuccess(false); }}
+              onClick={closeFreeForm}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl"
             >
               ×
@@ -168,450 +216,247 @@ export default function Home() {
             {freeSuccess ? (
               <div className="text-center py-8">
                 <div className="text-5xl mb-4">🎉</div>
-                <h3 className="text-2xl font-bold text-[#0c1929] mb-2">Report on its way!</h3>
-                <p className="text-slate-600 mb-4">Check your email in the next few minutes.</p>
-                <p className="text-sm text-slate-500">Want the full picture with crime & climate data?</p>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">Report on its way!</h3>
+                <p className="text-slate-600 mb-6">Check your inbox in a few minutes.</p>
+                
+                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+                  <p className="text-green-800 text-sm font-medium mb-2">
+                    Want the full picture?
+                  </p>
+                  <p className="text-green-700 text-xs mb-3">
+                    Upgrade to Premium for climate risk scores and crime data.
+                  </p>
+                  <button
+                    onClick={() => { closeFreeForm(); setIsModalOpen(true); }}
+                    className="bg-[#22c55e] text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#16a34a] transition"
+                  >
+                    Get Premium - $29.99
+                  </button>
+                </div>
+                
                 <button
-                  onClick={() => { setShowFreeForm(false); setFreeSuccess(false); openCheckout(); }}
-                  className="mt-4 bg-[#22c55e] text-white px-6 py-2 rounded-lg font-bold hover:bg-[#16a34a] transition"
+                  onClick={closeFreeForm}
+                  className="text-slate-500 hover:text-slate-700 text-sm"
                 >
-                  Upgrade to Premium - $29.99
+                  Close
                 </button>
               </div>
             ) : (
-              <>
-                <div className="text-center mb-6">
-                  <div className="inline-block bg-[#22c55e] text-white px-3 py-1 rounded-full text-xs font-bold mb-3">
-                    100% FREE
-                  </div>
-                  <h3 className="text-2xl font-bold text-[#0c1929] mb-2">Get Your Free Property Report</h3>
-                  <p className="text-slate-600 text-sm">
-                    Includes schools, hospitals, transport, planning overlays & air quality analysis.
+              <form onSubmit={handleFreeReport}>
+                <h3 className="text-2xl font-bold text-slate-800 mb-1 text-center">Free Property Report</h3>
+                <p className="text-slate-500 text-sm text-center mb-6">
+                  Schools, transport, overlays & air quality
+                </p>
+                
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Property Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={freeAddressInputRef}
+                    type="text"
+                    placeholder="Start typing a Victorian address..."
+                    value={freeAddress}
+                    onChange={(e) => {
+                      setFreeAddress(e.target.value);
+                      setFreeError('');
+                    }}
+                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] focus:outline-none text-slate-800"
+                    autoComplete="off"
+                  />
+                  <p className="text-xs text-slate-400 mt-1">
+                    {googleLoaded ? 'Start typing to see suggestions' : 'Loading address search...'}
+                  </p>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Floor Level <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={freeFloor}
+                    onChange={(e) => setFreeFloor(e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:border-[#22c55e] focus:outline-none bg-white text-slate-800 ${!freeFloor ? 'border-amber-300 bg-amber-50' : 'border-slate-200'}`}
+                  >
+                    {FLOOR_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-slate-500 mt-1">
+                    <strong>Required:</strong> Floor level affects risk calculations
                   </p>
                 </div>
                 
-                <form onSubmit={handleFreeReport} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">
-                      Property Address <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      ref={freeAddressInputRef}
-                      type="text"
-                      value={freeAddress}
-                      onChange={(e) => { setFreeAddress(e.target.value); setFreeError(''); }}
-                      placeholder="Start typing a Victorian address..."
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] outline-none text-slate-800"
-                      autoComplete="off"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">
-                      Floor Level <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={freeFloor}
-                      onChange={(e) => setFreeFloor(e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:border-[#22c55e] outline-none bg-white text-slate-800 ${!freeFloor ? 'border-amber-300 bg-amber-50' : 'border-slate-200'}`}
-                      required
-                    >
-                      {FLOOR_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-slate-500 mt-1">Floor level affects risk calculations</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">
-                      Your Email <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      value={freeEmail}
-                      onChange={(e) => setFreeEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] outline-none text-slate-800"
-                      required
-                    />
-                  </div>
-                  
-                  {freeError && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm">
-                      {freeError}
-                    </div>
-                  )}
-                  
-                  <button
-                    type="submit"
-                    disabled={freeLoading || !canSubmitFree}
-                    className="w-full bg-[#22c55e] text-white py-3 rounded-lg font-bold hover:bg-[#16a34a] transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {freeLoading ? 'Generating...' : 'Send Me My Free Report'}
-                  </button>
-                </form>
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={freeEmail}
+                    onChange={(e) => setFreeEmail(e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] focus:outline-none text-slate-800"
+                  />
+                  <p className="text-xs text-slate-400 mt-1">We'll send your report here</p>
+                </div>
                 
-                <p className="text-center text-xs text-slate-500 mt-4">
-                  No credit card required. Report delivered via email.
+                {freeError && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
+                    {freeError}
+                  </div>
+                )}
+                
+                <button
+                  type="submit"
+                  disabled={!canSubmitFree || freeLoading}
+                  className="w-full py-3 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-[#16a34a] transition disabled:bg-slate-300 disabled:cursor-not-allowed"
+                >
+                  {freeLoading ? 'Generating...' : 'Get Free Report'}
+                </button>
+                
+                <p className="text-center text-xs text-slate-400 mt-4">
+                  No credit card required • Report delivered instantly
                 </p>
-              </>
+              </form>
             )}
           </div>
         </div>
       )}
 
-      {/* Hero Section */}
-      <section className="bg-[#0c1929]">
-
-        {/* Navigation */}
-        <nav className="w-full px-4 md:px-6 py-4 border-b border-slate-700/30">
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <Link href="/" className="text-2xl font-extrabold hover:opacity-80 transition">
-              <span className="text-white">Nest</span>
-              <span className="text-[#22c55e]">Check</span>
-            </Link>
-            <div className="hidden md:flex items-center gap-6">
-              <a href="#features" className="text-slate-300 font-semibold hover:text-white transition">Features</a>
-              <a href="#pricing" className="text-slate-300 font-semibold hover:text-white transition">Pricing</a>
-              <a href="#faq" className="text-slate-300 font-semibold hover:text-white transition">FAQ</a>
-              <Link href="/sample" className="text-slate-300 font-semibold hover:text-white transition">Sample Report</Link>
-              <button
-                onClick={() => setShowFreeForm(true)}
-                className="text-[#22c55e] font-bold hover:text-white transition"
-              >
-                Free Report
-              </button>
-              <button
-                onClick={() => openCheckout()}
-                className="bg-[#22c55e] text-white px-5 py-2.5 rounded-lg font-bold hover:bg-[#16a34a] transition"
-              >
-                Get Premium
-              </button>
-            </div>
-          </div>
-        </nav>
-
-        {/* Hero Content */}
-        <div className="px-4 md:px-6 pt-12 md:pt-16 pb-10">
-          <div className="max-w-4xl mx-auto text-center">
-
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-bold mb-8">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Now with Planning Overlays & 10-Year Crime Data
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">
-              Know Everything About Your Property
-            </h1>
-
-            {/* Tagline */}
-            <p className="text-xl md:text-2xl text-[#22c55e] font-semibold italic mb-6">
-              Check before you nest
-            </p>
-
-            {/* Subheadline */}
-            <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">
-              Climate risk, planning overlays, crime statistics, schools, hospitals, and transport — all in one comprehensive property intelligence report.
-            </p>
-
-            {/* Social Proof with Faces */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
-              <div className="flex -space-x-3">
-                <img src="https://i.pravatar.cc/100?img=1" alt="" className="w-10 h-10 rounded-full border-2 border-[#0c1929]" />
-                <img src="https://i.pravatar.cc/100?img=5" alt="" className="w-10 h-10 rounded-full border-2 border-[#0c1929]" />
-                <img src="https://i.pravatar.cc/100?img=9" alt="" className="w-10 h-10 rounded-full border-2 border-[#0c1929]" />
-                <img src="https://i.pravatar.cc/100?img=12" alt="" className="w-10 h-10 rounded-full border-2 border-[#0c1929]" />
-                <img src="https://i.pravatar.cc/100?img=16" alt="" className="w-10 h-10 rounded-full border-2 border-[#0c1929]" />
-                <div className="w-10 h-10 rounded-full bg-[#22c55e] border-2 border-[#0c1929] flex items-center justify-center text-white text-xs font-bold">
-                  500+
-                </div>
-              </div>
-              <p className="text-slate-300 text-sm">
-                Join <strong className="text-white">500+ Victorians</strong> making smarter property decisions
-              </p>
-            </div>
-
-            {/* Search Box */}
-            <div className="max-w-xl mx-auto mb-4">
-              <div className="bg-white rounded-xl overflow-hidden shadow-2xl">
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Enter any Victorian address..."
-                  className="w-full px-5 py-4 text-base md:text-lg text-slate-800 placeholder-slate-400 border-none outline-none"
-                />
-                <div className="flex gap-2 p-2 bg-slate-50 border-t border-slate-100">
-                  <button 
-                    onClick={() => { if (address) { setFreeAddress(address); setShowFreeForm(true); } else { setShowFreeForm(true); } }}
-                    className="flex-1 py-3 border-2 border-[#22c55e] text-[#22c55e] rounded-lg font-bold hover:bg-green-50 transition"
-                  >
-                    Get FREE Report
-                  </button>
-                  <button 
-                    onClick={() => openCheckout(address)}
-                    className="flex-1 py-3 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-[#16a34a] transition"
-                  >
-                    Get Premium - $29.99
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <p className="text-slate-500 text-sm">
-              FREE: Schools, transport, overlays • PREMIUM: + Climate risk + Crime data
-            </p>
-          </div>
+      {/* HEADER */}
+      <header className="bg-[#0c1929] border-b border-slate-800/50">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-xl font-extrabold">
+            <span className="text-white">Nest</span>
+            <span className="text-[#22c55e]">Check</span>
+          </Link>
+          <nav className="flex items-center gap-6 text-sm">
+            <a href="#how-it-works" className="text-slate-400 hover:text-white transition hidden md:block">How It Works</a>
+            <a href="#pricing" className="text-slate-400 hover:text-white transition hidden md:block">Pricing</a>
+            <a href="#faq" className="text-slate-400 hover:text-white transition hidden md:block">FAQ</a>
+            <Link href="/sample" className="text-slate-400 hover:text-white transition">Sample Report</Link>
+          </nav>
         </div>
+      </header>
 
-        {/* Trust Bar */}
-        <div className="border-t border-slate-700/30 py-4 px-4">
-          <div className="max-w-6xl mx-auto flex flex-wrap justify-center items-center gap-3 text-xs md:text-sm">
-            <span className="text-slate-500">Trusted data from:</span>
-            <strong className="text-white">CFA Victoria</strong>
-            <span className="text-slate-600">•</span>
-            <strong className="text-white">Bureau of Meteorology</strong>
-            <span className="text-slate-600">•</span>
-            <strong className="text-white">Crime Statistics Agency</strong>
-            <span className="text-slate-600">•</span>
-            <strong className="text-white">Vicmap Planning</strong>
+      {/* HERO - NO ADDRESS INPUT, JUST BUTTONS */}
+      <section className="bg-gradient-to-b from-[#0c1929] to-[#0a1420] py-16 md:py-24 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight">
+            Check Before You <span className="text-[#22c55e]">Nest</span>
+          </h1>
+          <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+            Get instant property intelligence on climate risks, crime, schools, and more. Built so Victorians don't get ripped off.
+          </p>
+
+          {/* TWO CLEAR BUTTONS - No address input here */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+            <button
+              onClick={() => setShowFreeForm(true)}
+              className="w-full sm:w-auto px-8 py-4 bg-white text-[#0c1929] rounded-xl font-bold text-lg hover:bg-slate-100 transition shadow-lg"
+            >
+              Get FREE Report
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-full sm:w-auto px-8 py-4 bg-[#22c55e] text-white rounded-xl font-bold text-lg hover:bg-[#16a34a] transition shadow-lg"
+            >
+              Get Premium - $29.99
+            </button>
           </div>
+
+          <p className="text-slate-400 text-sm">
+            FREE: Schools, transport, overlays • PREMIUM: + Climate risk + Crime data
+          </p>
         </div>
       </section>
 
-      {/* Why Section */}
-      <section className="py-12 md:py-16 px-4 md:px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] mb-3">Why Property Buyers Need NestCheck</h2>
-            <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-              Insurers, banks, and property professionals use this data every day. Now you can too.
-            </p>
-          </div>
+      {/* HOW IT WORKS */}
+      <section className="py-12 md:py-16 px-4 md:px-6 bg-white" id="how-it-works">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] text-center mb-4">How It Works</h2>
+          <p className="text-slate-500 text-center mb-10 max-w-xl mx-auto">Get your property report in three simple steps</p>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-            <div className="bg-[#0c1929] rounded-xl p-5 md:p-6 text-center">
-              <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">$2-10k+</div>
-              <div className="text-slate-400 text-xs md:text-sm">Annual insurance variance</div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-[#22c55e]/10 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">📍</div>
+              <h3 className="font-bold text-lg text-[#0c1929] mb-2">1. Enter Address</h3>
+              <p className="text-slate-500 text-sm">Type any Victorian property address</p>
             </div>
-            <div className="bg-[#0c1929] rounded-xl p-5 md:p-6 text-center">
-              <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">15-30%</div>
-              <div className="text-slate-400 text-xs md:text-sm">Value discount in high-risk zones</div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-[#22c55e]/10 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">⚡</div>
+              <h3 className="font-bold text-lg text-[#0c1929] mb-2">2. Instant Analysis</h3>
+              <p className="text-slate-500 text-sm">We check 50+ data sources in seconds</p>
             </div>
-            <div className="bg-[#0c1929] rounded-xl p-5 md:p-6 text-center">
-              <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">1 in 4</div>
-              <div className="text-slate-400 text-xs md:text-sm">Properties with planning overlays</div>
-            </div>
-            <div className="bg-[#22c55e] rounded-xl p-5 md:p-6 text-center">
-              <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">5 min</div>
-              <div className="text-green-100 text-xs md:text-sm">To get insights that save thousands</div>
-            </div>
-          </div>
-
-          {/* Problem/Solution Cards */}
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-5">
-              <div className="text-red-700 font-bold mb-2 text-sm">Without NestCheck</div>
-              <p className="text-slate-600 text-sm">"We bought our dream home, then discovered it was in a bushfire zone. Insurance quoted us $8,000/year — triple what we budgeted."</p>
-            </div>
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-5">
-              <div className="text-red-700 font-bold mb-2 text-sm">Without NestCheck</div>
-              <p className="text-slate-600 text-sm">"The heritage overlay means we can't renovate without council approval. No one mentioned this before we signed."</p>
-            </div>
-            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-5">
-              <div className="text-[#166534] font-bold mb-2 text-sm">With NestCheck</div>
-              <p className="text-slate-600 text-sm">"We checked three properties before buying. NestCheck showed us which had the lowest risk. Best $30 we ever spent."</p>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-[#22c55e]/10 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">📄</div>
+              <h3 className="font-bold text-lg text-[#0c1929] mb-2">3. Get Your Report</h3>
+              <p className="text-slate-500 text-sm">PDF delivered straight to your inbox</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Who Is This For */}
-      <section className="py-12 md:py-16 px-4 md:px-6 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] mb-3">Who Is NestCheck For?</h2>
-            <p className="text-lg text-slate-500">Property intelligence for every stage of your journey</p>
+      {/* DATA SOURCES */}
+      <section className="py-10 px-4 bg-slate-50">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-slate-500 text-sm mb-6">Trusted data from official sources</p>
+          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 text-slate-400 text-sm">
+            <span>🏛️ Vic Government</span>
+            <span>🌊 Bureau of Meteorology</span>
+            <span>🔥 CFA</span>
+            <span>👮 Crime Statistics Agency</span>
+            <span>🗺️ Geoscience Australia</span>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {/* WHAT'S COVERED */}
+      <section className="py-12 md:py-16 px-4 md:px-6 bg-[#0c1929]">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white text-center mb-4">What's In Your Report?</h2>
+          <p className="text-slate-400 text-center mb-10 max-w-xl mx-auto">Comprehensive property intelligence at your fingertips</p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { icon: '🏠', title: 'Property Buyers', desc: 'Know risks and overlays before signing.' },
-              { icon: '🔑', title: 'Homeowners', desc: "Understand your property's risk profile." },
-              { icon: '📊', title: 'Investors', desc: 'Assess risk across your portfolio.' },
-              { icon: '🏢', title: 'Real Estate Agents', desc: 'Data-backed insights for clients.' },
-              { icon: '📋', title: 'Portfolio Managers', desc: 'Monitor risk across properties.' },
-              { icon: '🛋️', title: 'Renters', desc: 'Check before signing a lease.' },
-            ].map((item) => (
-              <div key={item.title} className="bg-white border border-slate-200 rounded-xl p-5 text-center hover:border-[#22c55e] hover:shadow-md transition">
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="text-base font-bold text-[#0c1929] mb-1">{item.title}</h3>
-                <p className="text-slate-500 text-sm">{item.desc}</p>
+              { icon: '🔥', title: 'Bushfire Risk', desc: 'BAL ratings & zone analysis', premium: true },
+              { icon: '🌊', title: 'Flood Risk', desc: 'Flood overlays & history', premium: true },
+              { icon: '⛈️', title: 'Storm Risk', desc: 'Severe weather patterns', premium: true },
+              { icon: '👮', title: 'Crime Data', desc: '10-year trends & safety score', premium: true },
+              { icon: '🏫', title: 'Schools', desc: 'Nearby schools & ratings', premium: false },
+              { icon: '🏥', title: 'Hospitals', desc: 'Distance to medical facilities', premium: false },
+              { icon: '🚆', title: 'Transport', desc: 'Trains, buses & trams', premium: false },
+              { icon: '📋', title: 'Planning Overlays', desc: '25+ overlay types checked', premium: false },
+              { icon: '💨', title: 'Air Quality', desc: 'Pollution & environmental data', premium: false },
+            ].map((item, i) => (
+              <div key={i} className="bg-slate-800/50 rounded-xl p-4 flex items-start gap-3">
+                <span className="text-2xl">{item.icon}</span>
+                <div>
+                  <h3 className="font-semibold text-white text-sm">{item.title}</h3>
+                  <p className="text-slate-400 text-xs">{item.desc}</p>
+                  {item.premium && <span className="text-[#22c55e] text-xs font-medium">Premium</span>}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-12 md:py-16 px-4 md:px-6 bg-white" id="features">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] mb-3">What's in Your Report?</h2>
-            <p className="text-lg text-slate-500">Everything you need before making the biggest purchase of your life</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-white border-2 border-[#22c55e] rounded-xl p-5 relative">
-              <div className="absolute -top-2.5 right-4 bg-[#22c55e] text-white text-xs font-bold px-3 py-1 rounded-full">PREMIUM</div>
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-xl mb-4">🔥</div>
-              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Climate Risk Analysis</h3>
-              <p className="text-slate-500 text-sm mb-3">Bushfire, flood, and storm risk scores based on 20+ years of data.</p>
-              <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Bushfire Prone Area status</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Flood zone proximity</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Historical storm events</li>
-              </ul>
-            </div>
-
-            <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="absolute -top-2.5 right-4 bg-slate-500 text-white text-xs font-bold px-3 py-1 rounded-full hidden">FREE</div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-xl mb-4">📋</div>
-              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Planning Overlays</h3>
-              <p className="text-slate-500 text-sm mb-3">Know what restrictions apply — heritage, environmental, development.</p>
-              <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Bushfire Management Overlay</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Heritage Overlay</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> 25+ overlay types checked</li>
-              </ul>
-            </div>
-
-            <div className="bg-white border-2 border-[#22c55e] rounded-xl p-5 relative">
-              <div className="absolute -top-2.5 right-4 bg-[#22c55e] text-white text-xs font-bold px-3 py-1 rounded-full">PREMIUM</div>
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-xl mb-4">🛡️</div>
-              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Crime & Safety</h3>
-              <p className="text-slate-500 text-sm mb-3">10 years of real crime statistics and safety analysis.</p>
-              <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Safety score by suburb</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Crime breakdown by category</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> 10-year trend analysis</li>
-              </ul>
-            </div>
-
-            <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-xl mb-4">🎓</div>
-              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Schools</h3>
-              <p className="text-slate-500 text-sm mb-3">Nearby primary and secondary schools with distances.</p>
-              <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> All nearby schools listed</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Distance from property</li>
-              </ul>
-            </div>
-
-            <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-xl mb-4">🏥</div>
-              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Hospitals</h3>
-              <p className="text-slate-500 text-sm mb-3">Know how close you are to medical services.</p>
-              <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> All nearby hospitals</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Distance from property</li>
-              </ul>
-            </div>
-
-            <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-xl mb-4">🚆</div>
-              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Public Transport</h3>
-              <p className="text-slate-500 text-sm mb-3">Train stations, tram stops, and bus routes nearby.</p>
-              <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Trains, trams, buses</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Distance from property</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Score Legend */}
-      <section className="py-10 px-4 md:px-6 bg-[#0c1929]">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">Simple Scores, Clear Decisions</h2>
-          <p className="text-slate-400 mb-6">All scores are out of 100. <strong className="text-white">Higher = Better.</strong></p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <div className="bg-[#22c55e] text-white px-4 py-2 rounded-lg font-bold text-sm">80-100 LOW RISK</div>
-            <div className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-bold text-sm">60-79 MEDIUM</div>
-            <div className="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold text-sm">40-59 HIGH</div>
-            <div className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">0-39 EXTREME</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-12 md:py-16 px-4 md:px-6 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] text-center mb-10">What Property Buyers Are Saying</h2>
-
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-white border-2 border-slate-200 rounded-xl p-5">
-              <div className="text-yellow-500 mb-3">★★★★★</div>
-              <blockquote className="text-slate-600 text-sm mb-4">"We almost bought in Kinglake until we saw the bushfire risk score. This tool saved us from a huge mistake."</blockquote>
-              <div className="flex items-center gap-3">
-                <img src="https://i.pravatar.cc/100?img=25" alt="" className="w-10 h-10 rounded-full" />
-                <div>
-                  <div className="font-bold text-[#0c1929] text-sm">Sarah M.</div>
-                  <div className="text-xs text-slate-500">First Home Buyer, Melbourne</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white border-2 border-slate-200 rounded-xl p-5">
-              <div className="text-yellow-500 mb-3">★★★★★</div>
-              <blockquote className="text-slate-600 text-sm mb-4">"The planning overlay check was a game-changer. Found out about a heritage overlay that would've blocked our renovations."</blockquote>
-              <div className="flex items-center gap-3">
-                <img src="https://i.pravatar.cc/100?img=33" alt="" className="w-10 h-10 rounded-full" />
-                <div>
-                  <div className="font-bold text-[#0c1929] text-sm">James T.</div>
-                  <div className="text-xs text-slate-500">Property Investor, Geelong</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white border-2 border-slate-200 rounded-xl p-5">
-              <div className="text-yellow-500 mb-3">★★★★★</div>
-              <blockquote className="text-slate-600 text-sm mb-4">"As a buyer's agent, I run NestCheck on every property. The crime trends and school data is invaluable."</blockquote>
-              <div className="flex items-center gap-3">
-                <img src="https://i.pravatar.cc/100?img=47" alt="" className="w-10 h-10 rounded-full" />
-                <div>
-                  <div className="font-bold text-[#0c1929] text-sm">Michelle L.</div>
-                  <div className="text-xs text-slate-500">Buyer's Agent, Brighton</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
+      {/* PRICING */}
       <section className="py-12 md:py-16 px-4 md:px-6 bg-white" id="pricing">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] mb-3">Simple, Transparent Pricing</h2>
-            <p className="text-lg text-slate-500">Start free, upgrade when you need the full picture.</p>
-          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] text-center mb-4">Simple Pricing</h2>
+          <p className="text-slate-500 text-center mb-10 max-w-xl mx-auto">Choose the report that's right for you</p>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {/* Free */}
-            <div className="bg-white border-2 border-slate-200 rounded-2xl p-6">
-              <div className="text-slate-500 font-bold text-sm uppercase mb-1">Free Report</div>
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
+              <div className="text-slate-600 font-bold text-sm uppercase mb-1">Free Report</div>
               <div className="text-4xl font-extrabold text-[#0c1929] mb-1">$0</div>
-              <p className="text-slate-500 text-sm mb-5">Essential property information</p>
+              <p className="text-slate-500 text-sm mb-5">Essential property info</p>
 
-              <ul className="space-y-2 mb-6 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Property Location & Details</li>
+              <ul className="space-y-2 mb-4 text-sm text-slate-600">
                 <li><span className="text-[#22c55e] font-bold">✔</span> 25+ Planning Overlays</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Schools & Hospitals</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Public Transport</li>
@@ -649,7 +494,7 @@ export default function Home() {
               </div>
 
               <button
-                onClick={() => openCheckout()}
+                onClick={() => setIsModalOpen(true)}
                 className="w-full py-3 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-[#16a34a] transition"
               >
                 Get Premium Report
@@ -730,7 +575,7 @@ export default function Home() {
               Get Free Report
             </button>
             <button
-              onClick={() => openCheckout()}
+              onClick={() => setIsModalOpen(true)}
               className="px-8 py-4 bg-[#22c55e] text-white rounded-xl font-bold hover:bg-[#16a34a] transition"
             >
               Get Premium - $29.99
@@ -778,7 +623,6 @@ export default function Home() {
       <CheckoutModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        initialAddress={address}
       />
     </main>
   )
