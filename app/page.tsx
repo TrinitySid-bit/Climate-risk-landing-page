@@ -1,7 +1,24 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import CheckoutModal from '@/components/CheckoutModal'
 import Link from 'next/link'
+
+const FLOOR_OPTIONS = [
+  { value: '', label: '-- Select floor level --' },
+  { value: 'house', label: 'House / Townhouse' },
+  { value: 'ground', label: 'Ground Floor (Apartment)' },
+  { value: 'low', label: 'Level 1-3' },
+  { value: 'mid', label: 'Level 4-10' },
+  { value: 'high', label: 'Level 11-20' },
+  { value: 'very_high', label: 'Level 21+' },
+];
+
+declare global {
+  interface Window {
+    google: any;
+    initGooglePlacesFree: () => void;
+  }
+}
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -9,19 +26,84 @@ export default function Home() {
   const [showFreeForm, setShowFreeForm] = useState(false)
   const [freeEmail, setFreeEmail] = useState('')
   const [freeAddress, setFreeAddress] = useState('')
+  const [freeFloor, setFreeFloor] = useState('')
   const [freeLoading, setFreeLoading] = useState(false)
   const [freeSuccess, setFreeSuccess] = useState(false)
+  const [freeError, setFreeError] = useState('')
+  
+  const freeAddressInputRef = useRef<HTMLInputElement>(null)
+  const freeAutocompleteRef = useRef<any>(null)
 
   const openCheckout = (addr?: string) => {
     if (addr) setAddress(addr)
     setIsModalOpen(true)
   }
 
+  // Initialize Google Places for free form
+  useEffect(() => {
+    if (!showFreeForm || !freeAddressInputRef.current) return;
+    
+    const initAutocomplete = () => {
+      if (!window.google || !window.google.maps || !window.google.maps.places) return;
+      if (freeAutocompleteRef.current) return;
+      
+      freeAutocompleteRef.current = new window.google.maps.places.Autocomplete(freeAddressInputRef.current, {
+        componentRestrictions: { country: 'au' },
+        fields: ['formatted_address', 'address_components'],
+        types: ['address'],
+      });
+
+      freeAutocompleteRef.current.addListener('place_changed', () => {
+        const place = freeAutocompleteRef.current?.getPlace();
+        if (place?.formatted_address) {
+          setFreeAddress(place.formatted_address);
+          
+          const state = place.address_components?.find(
+            (c: any) => c.types.includes('administrative_area_level_1')
+          );
+          
+          if (state?.short_name !== 'VIC') {
+            setFreeError('Please enter a Victorian address. We currently only cover Victoria.');
+          } else {
+            setFreeError('');
+          }
+        }
+      });
+    };
+
+    if (window.google && window.google.maps && window.google.maps.places) {
+      initAutocomplete();
+      return;
+    }
+
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) return;
+
+    if (!document.getElementById('google-maps-script')) {
+      window.initGooglePlacesFree = initAutocomplete;
+      const script = document.createElement('script');
+      script.id = 'google-maps-script';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGooglePlacesFree`;
+      script.async = true;
+      document.head.appendChild(script);
+    } else {
+      initAutocomplete();
+    }
+  }, [showFreeForm]);
+
+  // Reset free form when closed
+  useEffect(() => {
+    if (!showFreeForm) {
+      freeAutocompleteRef.current = null;
+    }
+  }, [showFreeForm]);
+
   const handleFreeReport = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!freeAddress || !freeEmail) return
+    if (!freeAddress || !freeEmail || !freeFloor) return
     
     setFreeLoading(true)
+    setFreeError('')
     try {
       const response = await fetch('https://climatescore-api-production.up.railway.app/api/reports/free-report', {
         method: 'POST',
@@ -29,7 +111,7 @@ export default function Home() {
         body: JSON.stringify({
           address: freeAddress,
           email: freeEmail,
-          floor: 'na'
+          floor: freeFloor
         })
       })
       
@@ -37,13 +119,19 @@ export default function Home() {
         setFreeSuccess(true)
         setFreeAddress('')
         setFreeEmail('')
+        setFreeFloor('')
+      } else {
+        setFreeError('Something went wrong. Please try again.')
       }
     } catch (error) {
       console.error('Error:', error)
+      setFreeError('Something went wrong. Please try again.')
     } finally {
       setFreeLoading(false)
     }
   }
+
+  const canSubmitFree = freeAddress.length >= 10 && freeEmail.includes('@') && freeFloor !== '' && !freeError
 
   return (
     <main className="min-h-screen" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
@@ -104,31 +192,60 @@ export default function Home() {
                 
                 <form onSubmit={handleFreeReport} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">Property Address</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">
+                      Property Address <span className="text-red-500">*</span>
+                    </label>
                     <input
+                      ref={freeAddressInputRef}
                       type="text"
                       value={freeAddress}
-                      onChange={(e) => setFreeAddress(e.target.value)}
-                      placeholder="Enter any Victorian address..."
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] outline-none"
+                      onChange={(e) => { setFreeAddress(e.target.value); setFreeError(''); }}
+                      placeholder="Start typing a Victorian address..."
+                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] outline-none text-slate-800"
+                      autoComplete="off"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">Your Email</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">
+                      Floor Level <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={freeFloor}
+                      onChange={(e) => setFreeFloor(e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:border-[#22c55e] outline-none bg-white text-slate-800 ${!freeFloor ? 'border-amber-300 bg-amber-50' : 'border-slate-200'}`}
+                      required
+                    >
+                      {FLOOR_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-slate-500 mt-1">Floor level affects flood risk calculations</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">
+                      Your Email <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="email"
                       value={freeEmail}
                       onChange={(e) => setFreeEmail(e.target.value)}
                       placeholder="your@email.com"
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] outline-none"
+                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] outline-none text-slate-800"
                       required
                     />
                   </div>
+                  
+                  {freeError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm">
+                      {freeError}
+                    </div>
+                  )}
+                  
                   <button
                     type="submit"
-                    disabled={freeLoading}
-                    className="w-full bg-[#22c55e] text-white py-3 rounded-lg font-bold hover:bg-[#16a34a] transition disabled:opacity-50"
+                    disabled={freeLoading || !canSubmitFree}
+                    className="w-full bg-[#22c55e] text-white py-3 rounded-lg font-bold hover:bg-[#16a34a] transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {freeLoading ? 'Generating...' : 'Send Me My Free Report'}
                   </button>
