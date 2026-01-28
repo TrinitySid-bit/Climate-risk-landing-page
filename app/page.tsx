@@ -136,7 +136,7 @@ export default function Home() {
   return (
     <main className="min-h-screen" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
 
-      {/* FREE REPORT BANNER - ATTN VICTORIANS */}
+      {/* FREE REPORT BANNER - ATTENTION VICTORIANS */}
       <div className="bg-gradient-to-r from-[#22c55e] to-[#16a34a] px-4 py-4 text-center">
         <div className="max-w-4xl mx-auto">
           <p className="text-white font-bold text-lg md:text-xl mb-1">
