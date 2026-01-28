@@ -423,7 +423,7 @@ export default function Home() {
               <div className="text-slate-400 text-xs md:text-sm">Properties with planning overlays</div>
             </div>
             <div className="bg-[#22c55e] rounded-xl p-5 md:p-6 text-center">
-              <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">5 min</div>
+              <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">5 minutes</div>
               <div className="text-green-100 text-xs md:text-sm">To get insights that save thousands</div>
             </div>
           </div>
