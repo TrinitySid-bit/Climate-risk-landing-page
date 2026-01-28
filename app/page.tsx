@@ -673,7 +673,7 @@ export default function Home() {
             <span><span className="text-[#22c55e]">✔</span> Priority support</span>
           </div>
 
-          <a href="mailto:commercial@nestcheck.com.au" className="inline-block bg-white text-[#0c1929] px-8 py-3 rounded-lg font-bold hover:bg-slate-100 transition">
+          <a href="mailto:hello@nestcheck.com.au" className="inline-block bg-white text-[#0c1929] px-8 py-3 rounded-lg font-bold hover:bg-slate-100 transition">
             Get in Touch
           </a>
         </div>
