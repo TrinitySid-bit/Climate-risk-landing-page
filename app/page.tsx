@@ -140,7 +140,7 @@ export default function Home() {
       <div className="bg-gradient-to-r from-[#22c55e] to-[#16a34a] px-4 py-4 text-center">
         <div className="max-w-4xl mx-auto">
           <p className="text-white font-bold text-lg md:text-xl mb-1">
-            🏠 ATTN Victorians: Get a FREE Property Report!
+            🏠 ATTENTION Victorians: Get a FREE Property Report!
           </p>
           <p className="text-green-100 text-sm mb-3">
             Schools, hospitals, transport, planning overlays & air quality - completely free. No credit card required.
