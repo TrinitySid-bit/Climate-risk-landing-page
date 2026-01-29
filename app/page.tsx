@@ -168,7 +168,7 @@ export default function Home() {
           <p className="text-green-100 text-sm mb-3">
             Schools, hospitals, transport, planning overlays, air quality, parks, trails, EV chargers, childcare & more - completely free. No credit card required.
           </p>
-          <p class="text-yellow-200 text-xs font-semibold mb-1">?? NOW WITH LIFESTYLE DATA: 385,000+ amenity data points added!</p>
+          <p className="text-yellow-200 text-xs font-semibold mb-1">?? NOW WITH LIFESTYLE DATA: 385,000+ amenity data points added!</p>
           <button
             onClick={() => setShowFreeForm(true)}
             className="bg-white text-[#16a34a] px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition shadow-lg"
