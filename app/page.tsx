@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect, useRef } from 'react'
 import CheckoutModal from '@/components/CheckoutModal'
 import Link from 'next/link'
@@ -168,7 +168,7 @@ export default function Home() {
           <p className="text-green-100 text-sm mb-3">
             Schools, hospitals, transport, planning overlays, air quality, parks, trails, EV chargers, childcare & more - completely free. No credit card required.
           </p>
-          <p className="text-yellow-200 text-xs font-semibold mb-1">?? NOW WITH LIFESTYLE DATA: 385,000+ amenity data points added!</p>
+          <p className="text-yellow-200 text-xs font-semibold mb-1">🆕 NOW WITH LIFESTYLE DATA: 385,000+ amenity data points added!</p>
           <button
             onClick={() => setShowFreeForm(true)}
             className="bg-white text-[#16a34a] px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition shadow-lg"
@@ -379,7 +379,7 @@ export default function Home() {
             </div>
 
             <p className="text-slate-500 text-sm">
-              FREE: Schools, transport, overlays • PREMIUM: + Climate risk + Crime data
+              FREE: Schools, parks, trails, childcare & more • PREMIUM: + Climate risk + Crime data
             </p>
           </div>
         </div>
@@ -395,6 +395,10 @@ export default function Home() {
             <strong className="text-white">Crime Statistics Agency</strong>
             <span className="text-slate-600">•</span>
             <strong className="text-white">Vicmap Planning</strong>
+            <span className="text-slate-600">�</span>
+            <strong className="text-white">OpenStreetMap</strong>
+            <span className="text-slate-600">�</span>
+            <strong className="text-white">ACECQA</strong>
           </div>
         </div>
       </section>
@@ -631,11 +635,11 @@ export default function Home() {
                 <li><span className="text-[#22c55e] font-bold">✔</span> Schools & Hospitals</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Public Transport</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Air Quality Analysis</li>
-                <li><span className="text-[#22c55e] font-bold">?</span> Mobile Coverage</li>
-                <li><span className="text-[#22c55e] font-bold">?</span> Parks, Trails & Bike Paths</li>
-                <li><span className="text-[#22c55e] font-bold">?</span> EV Charging Stations</li>
-                <li><span className="text-[#22c55e] font-bold">?</span> Supermarkets, Cafes & Pharmacies</li>
-                <li><span className="text-[#22c55e] font-bold">?</span> Childcare Centres (with ratings)</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Mobile Coverage</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Parks, Trails & Bike Paths</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> EV Charging Stations</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Supermarkets, Cafes & Pharmacies</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Childcare Centres (with ratings)</li>
                 <li><span className="text-slate-400">✗</span> <span className="text-slate-400">Climate Risk Scores</span></li>
                 <li><span className="text-slate-400">✗</span> <span className="text-slate-400">Crime & Safety Analysis</span></li>
               </ul>
@@ -662,7 +666,7 @@ export default function Home() {
                 <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Crime & Safety Score</strong></li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> <strong>10-Year Crime Trends</strong></li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Serious Crime Breakdown</strong></li>
-                <li><span className="text-[#22c55e] font-bold">?</span> <strong>Lifestyle Score (0-100)</strong></li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Lifestyle Score (0-100)</strong></li>
               </ul>
 
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-xs text-green-800">
