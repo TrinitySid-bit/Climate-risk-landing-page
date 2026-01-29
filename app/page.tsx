@@ -1,4 +1,4 @@
-ï»¿'use client'
+'use client'
 import { useState, useEffect, useRef } from 'react'
 import CheckoutModal from '@/components/CheckoutModal'
 import Link from 'next/link'
@@ -395,9 +395,9 @@ export default function Home() {
             <strong className="text-white">Crime Statistics Agency</strong>
             <span className="text-slate-600">â€¢</span>
             <strong className="text-white">Vicmap Planning</strong>
-            <span className="text-slate-600">ï¿½</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">OpenStreetMap</strong>
-            <span className="text-slate-600">ï¿½</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">ACECQA</strong>
           </div>
         </div>
