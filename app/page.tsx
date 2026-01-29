@@ -529,6 +529,7 @@ export default function Home() {
               <ul className="space-y-1 text-sm text-slate-600">
                 <li><span className="text-[#22c55e] font-bold">✔</span> All nearby schools listed</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Distance from property</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Childcare centres with NQS ratings</li>
               </ul>
             </div>
 
@@ -539,6 +540,7 @@ export default function Home() {
               <ul className="space-y-1 text-sm text-slate-600">
                 <li><span className="text-[#22c55e] font-bold">✔</span> All nearby hospitals</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Distance from property</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Pharmacies nearby</li>
               </ul>
             </div>
 
