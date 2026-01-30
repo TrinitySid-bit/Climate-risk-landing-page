@@ -155,8 +155,8 @@ export default function Home() {
       <div className="bg-gradient-to-r from-[#22c55e] to-[#16a34a] px-4 py-4 text-center">
         <div className="max-w-4xl mx-auto">
           <p className="text-white font-bold text-lg md:text-xl mb-1">🏠 ATTENTION Victorians: Get a FREE Property Report!</p>
-          <p className="text-green-100 text-sm mb-2">Schools, hospitals, transport, parks, trails, EV chargers, childcare & more - completely free. No credit card required.</p>
-          <p className="text-yellow-200 text-xs font-semibold mb-3">🆕 NOW WITH LIFESTYLE DATA: 385,000+ amenity data points!</p>
+          <p className="text-green-100 text-sm mb-2">Planning zones, schools, hospitals, transport, parks, trails, EV chargers, childcare & more - completely free. No credit card required.</p>
+          <p className="text-yellow-200 text-xs font-semibold mb-3">🆕 NOW WITH 500,000+ DATA POINTS: Planning zones, electorates, water & fire authorities!</p>
           <button onClick={() => setShowFreeForm(true)} className="bg-white text-[#16a34a] px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition shadow-lg">Get Your FREE Report →</button>
         </div>
       </div>
@@ -180,7 +180,7 @@ export default function Home() {
                 <div className="text-center mb-6">
                   <div className="inline-block bg-[#22c55e] text-white px-3 py-1 rounded-full text-xs font-bold mb-3">100% FREE</div>
                   <h3 className="text-2xl font-bold text-[#0c1929] mb-2">Get Your Free Property Report</h3>
-                  <p className="text-slate-600 text-sm">Includes schools, hospitals, transport, planning overlays & air quality analysis.</p>
+                  <p className="text-slate-600 text-sm">Includes planning zone, schools, hospitals, transport, planning overlays & air quality analysis.</p>
                 </div>
                 
                 <form onSubmit={handleFreeReport} className="space-y-4">
@@ -233,11 +233,11 @@ export default function Home() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-bold mb-8">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              Now with Planning Overlays & 10-Year Crime Data
+              Now with Planning Zones, Electorates & 10-Year Crime Data
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">Know Everything About Your Property</h1>
             <p className="text-xl md:text-2xl text-[#22c55e] font-semibold italic mb-6">Check before you nest</p>
-            <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">Climate risk, planning overlays, crime statistics, schools, hospitals, and transport — all in one comprehensive property intelligence report.</p>
+            <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">Climate risk, planning zones, crime statistics, schools, hospitals, and transport — all in one comprehensive property intelligence report.</p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
               <div className="flex -space-x-3">
@@ -255,7 +255,7 @@ export default function Home() {
               <button onClick={() => setShowFreeForm(true)} className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white bg-transparent rounded-xl font-bold text-lg hover:bg-white hover:text-[#0c1929] transition">Get FREE Report</button>
               <button onClick={() => openCheckout()} className="w-full sm:w-auto px-8 py-4 bg-[#22c55e] text-white rounded-xl font-bold text-lg hover:bg-[#16a34a] transition">Get Premium - $29.99</button>
             </div>
-            <p className="text-slate-500 text-sm">FREE: Schools, parks, childcare & more • PREMIUM: + Climate risk + Crime data</p>
+            <p className="text-slate-500 text-sm">FREE: Planning zones, schools, parks, childcare & more • PREMIUM: + Climate risk + Crime data + Electorates</p>
           </div>
         </div>
 
@@ -269,6 +269,8 @@ export default function Home() {
             <strong className="text-white">Crime Statistics Agency</strong>
             <span className="text-slate-600">•</span>
             <strong className="text-white">Vicmap Planning</strong>
+            <span className="text-slate-600">•</span>
+            <strong className="text-white">AEC & VEC</strong>
             <span className="text-slate-600">•</span>
             <strong className="text-white">OpenStreetMap</strong>
             <span className="text-slate-600">•</span>
@@ -345,11 +347,11 @@ export default function Home() {
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-xl mb-4">📋</div>
-              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Planning Overlays</h3>
-              <p className="text-slate-500 text-sm mb-3">Know what restrictions apply — heritage, environmental, development.</p>
+              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Planning Zones & Overlays</h3>
+              <p className="text-slate-500 text-sm mb-3">Know your zoning and what restrictions apply — heritage, environmental, development.</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Bushfire Management Overlay</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Heritage Overlay</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Planning zone with explanation</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Heritage & Bushfire Overlays</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> 25+ overlay types checked</li>
               </ul>
             </div>
@@ -377,11 +379,11 @@ export default function Home() {
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
               <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-xl mb-4">🏥</div>
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Health & Services</h3>
-              <p className="text-slate-500 text-sm mb-3">Hospitals, pharmacies, supermarkets and daily essentials.</p>
+              <p className="text-slate-500 text-sm mb-3">Hospitals, pharmacies, supermarkets, water & fire authorities.</p>
               <ul className="space-y-1 text-sm text-slate-600">
                 <li><span className="text-[#22c55e] font-bold">✔</span> Hospitals & pharmacies</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Supermarkets & cafes</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Distance from property</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Water provider info</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Fire authority (FRV/CFA)</li>
               </ul>
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
@@ -450,6 +452,8 @@ export default function Home() {
               <p className="text-slate-500 text-sm mb-5">Essential property information</p>
               <ul className="space-y-2 mb-6 text-sm text-slate-600">
                 <li><span className="text-[#22c55e] font-bold">✔</span> Property Location & Details</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Planning Zone</strong> (with explanation)</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Water Provider & Fire Authority</strong></li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> 25+ Planning Overlays</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Schools & Hospitals</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Public Transport</li>
@@ -477,6 +481,7 @@ export default function Home() {
                 <li><span className="text-[#22c55e] font-bold">✔</span> <strong>10-Year Crime Trends</strong></li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Serious Crime Breakdown</strong></li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Lifestyle Score (0-100)</strong></li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Federal & State Electorates</strong></li>
               </ul>
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-xs text-green-800"><strong>Why Premium?</strong> Photos don't show flood zones, bushfire ratings, or crime hotspots. Premium reveals what agents won't tell you — protect your investment and your family.</div>
               <button onClick={() => openCheckout()} className="w-full py-3 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-[#16a34a] transition">Get Premium Report</button>
@@ -514,8 +519,8 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] text-center mb-10">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {[
-              { q: "What's included in the FREE report?", a: "The free report includes property details, 25+ planning overlays, nearby schools, hospitals, public transport, air quality, mobile coverage, parks & trails, EV charging stations, supermarkets, cafes, pharmacies, and childcare centres with quality ratings. It's packed with lifestyle data!" },
-              { q: "What extra do I get with Premium?", a: "Premium adds climate risk scores (bushfire, flood, storm), crime & safety analysis, 10-year crime trends, detailed crime breakdowns, and the Lifestyle Score. Essential data for making a fully informed decision." },
+              { q: "What's included in the FREE report?", a: "The free report includes property details, planning zone with plain-English explanation, water provider, fire authority, 25+ planning overlays, nearby schools, hospitals, public transport, air quality, mobile coverage, parks & trails, EV charging stations, supermarkets, cafes, pharmacies, and childcare centres with quality ratings. Over 500,000 data points!" },
+              { q: "What extra do I get with Premium?", a: "Premium adds climate risk scores (bushfire, flood, storm), crime & safety analysis, 10-year crime trends, detailed crime breakdowns, Lifestyle Score, and your Federal & State electorates. Essential data for making a fully informed decision." },
               { q: "How do the scores work?", a: "All scores are out of 100, higher is always better. 80-100 = low risk, 60-79 = medium, 40-59 = high, 0-39 = extreme risk." },
               { q: "What are planning overlays?", a: "Government controls that restrict what you can build or renovate. Heritage overlays, bushfire overlays, flood overlays — we check 25+ types." },
               { q: "Does this replace a building inspection?", a: "No. NestCheck covers location-based risks. You still need a professional building inspection for structural issues." },
@@ -566,7 +571,7 @@ export default function Home() {
           </div>
           <div className="text-center text-xs text-slate-500">
             <p>© 2026 NestCheck. ABN 48 670 311 318. Made in Victoria, Australia.</p>
-            <p className="mt-1">Data: © State of Victoria, OpenStreetMap, ACECQA, OpenChargeMap. CC BY 4.0.</p>
+            <p className="mt-1">Data: © State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap. CC BY 4.0.</p>
           </div>
         </div>
       </footer>
