@@ -383,7 +383,7 @@ export default function Home() {
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Community Profile</h3>
               <p className="text-slate-500 text-sm mb-3">Census demographics, hospitals, utilities and local services.</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Census 2021 demographics</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Census demographics</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Hospitals & pharmacies</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Water & fire authorities</li>
               </ul>
@@ -573,7 +573,7 @@ export default function Home() {
           </div>
           <div className="text-center text-xs text-slate-500">
             <p>© 2026 NestCheck. ABN 48 670 311 318. Made in Victoria, Australia.</p>
-            <p className="mt-1">Data: © State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap, ABS Census 2021. CC BY 4.0.</p>
+            <p className="mt-1">Data: © State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap, ABS Census. CC BY 4.0.</p>
           </div>
         </div>
       </footer>
