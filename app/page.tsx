@@ -380,12 +380,12 @@ export default function Home() {
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
               <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-xl mb-4">🏥</div>
-              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Health & Services</h3>
-              <p className="text-slate-500 text-sm mb-3">Hospitals, pharmacies, supermarkets, water & fire authorities.</p>
+              <h3 className="text-lg font-bold text-[#0c1929] mb-2">Community Profile</h3>
+              <p className="text-slate-500 text-sm mb-3">Census demographics, hospitals, utilities and local services.</p>
               <ul className="space-y-1 text-sm text-slate-600">
+                <li><span className="text-[#22c55e] font-bold">✔</span> Census 2021 demographics</li>
                 <li><span className="text-[#22c55e] font-bold">✔</span> Hospitals & pharmacies</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Water provider info</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Fire authority (FRV/CFA)</li>
+                <li><span className="text-[#22c55e] font-bold">✔</span> Water & fire authorities</li>
               </ul>
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
