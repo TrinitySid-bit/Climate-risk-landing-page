@@ -275,7 +275,7 @@ export default function Home() {
             <strong className="text-white">OpenStreetMap</strong>
             <span className="text-slate-600">â€¢</span>
             <strong className="text-white">ACECQA</strong>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">ï¿½</span>
             <strong className="text-white">ABS Census</strong>
           </div>
         </div>
