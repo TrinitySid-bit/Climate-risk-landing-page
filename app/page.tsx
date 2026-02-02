@@ -156,7 +156,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <p className="text-white font-bold text-lg md:text-xl mb-1">🏠 ATTENTION Victorians: Get a FREE Property Report!</p>
           <p className="text-green-100 text-sm mb-2">Planning zones, schools, hospitals, transport, parks, trails, EV chargers, childcare & more - completely free. No credit card required.</p>
-          <p className="text-yellow-200 text-xs font-semibold mb-3">🆕 NOW WITH 500,000+ DATA POINTS: Planning zones, electorates, water & fire authorities!</p>
+          <p className="text-yellow-200 text-xs font-semibold mb-3">🆕 NOW WITH 1,000,000+ DATA POINTS: Planning zones, electorates, water & fire authorities!</p>
           <button onClick={() => setShowFreeForm(true)} className="bg-white text-[#16a34a] px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition shadow-lg">Get Your FREE Report →</button>
         </div>
       </div>
@@ -275,6 +275,8 @@ export default function Home() {
             <strong className="text-white">OpenStreetMap</strong>
             <span className="text-slate-600">•</span>
             <strong className="text-white">ACECQA</strong>
+            <span className="text-slate-600">�</span>
+            <strong className="text-white">ABS Census</strong>
           </div>
         </div>
       </section>
@@ -404,12 +406,12 @@ export default function Home() {
       <section className="py-10 px-4 md:px-6 bg-[#0c1929]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-white mb-2">Simple Scores, Clear Decisions</h2>
-          <p className="text-slate-400 mb-6">All scores are out of 100. <strong className="text-white">Higher = Better.</strong></p>
+          <p className="text-slate-400 mb-6">All scores are out of 100. <strong className="text-white">Lower = Lower Risk.</strong></p>
           <div className="flex flex-wrap justify-center gap-3">
-            <div className="bg-[#22c55e] text-white px-4 py-2 rounded-lg font-bold text-sm">80-100 LOW RISK</div>
-            <div className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-bold text-sm">60-79 MEDIUM</div>
-            <div className="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold text-sm">40-59 HIGH</div>
-            <div className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">0-39 EXTREME</div>
+            <div className="bg-[#22c55e] text-white px-4 py-2 rounded-lg font-bold text-sm">0-20 LOW RISK</div>
+            <div className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-bold text-sm">21-40 MEDIUM</div>
+            <div className="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold text-sm">41-60 HIGH</div>
+            <div className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">61-100 EXTREME</div>
           </div>
         </div>
       </section>
@@ -519,9 +521,9 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] text-center mb-10">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {[
-              { q: "What's included in the FREE report?", a: "The free report includes property details, planning zone with plain-English explanation, water provider, fire authority, 25+ planning overlays, nearby schools, hospitals, public transport, air quality, mobile coverage, parks & trails, EV charging stations, supermarkets, cafes, pharmacies, and childcare centres with quality ratings. Over 500,000 data points!" },
+              { q: "What's included in the FREE report?", a: "The free report includes property details, planning zone with plain-English explanation, water provider, fire authority, 25+ planning overlays, nearby schools, hospitals, public transport, air quality, mobile coverage, parks & trails, EV charging stations, supermarkets, cafes, pharmacies, and childcare centres with quality ratings. Over 1,000,000 data points!" },
               { q: "What extra do I get with Premium?", a: "Premium adds climate risk scores (bushfire, flood, storm), crime & safety analysis, 10-year crime trends, detailed crime breakdowns, Lifestyle Score, and your Federal & State electorates. Essential data for making a fully informed decision." },
-              { q: "How do the scores work?", a: "All scores are out of 100, higher is always better. 80-100 = low risk, 60-79 = medium, 40-59 = high, 0-39 = extreme risk." },
+              { q: "How do the scores work?", a: "All risk scores are out of 100, lower is better (like golf!). 0-20 = low risk, 21-40 = medium, 41-60 = high, 61-100 = extreme risk." },
               { q: "What are planning overlays?", a: "Government controls that restrict what you can build or renovate. Heritage overlays, bushfire overlays, flood overlays — we check 25+ types." },
               { q: "Does this replace a building inspection?", a: "No. NestCheck covers location-based risks. You still need a professional building inspection for structural issues." },
               { q: "How quickly will I get my report?", a: "Reports are generated instantly and delivered to your email within minutes as a professional PDF." },
@@ -571,7 +573,7 @@ export default function Home() {
           </div>
           <div className="text-center text-xs text-slate-500">
             <p>© 2026 NestCheck. ABN 48 670 311 318. Made in Victoria, Australia.</p>
-            <p className="mt-1">Data: © State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap. CC BY 4.0.</p>
+            <p className="mt-1">Data: © State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap, ABS Census 2021. CC BY 4.0.</p>
           </div>
         </div>
       </footer>
