@@ -217,7 +217,7 @@ export default function Home() {
       <section className="bg-[#0c1929]">
         <nav className="w-full px-4 md:px-6 py-4 border-b border-slate-700/30">
           <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <Link href="/" className="hover:opacity-80 transition"><img src="/NESTCHECK.png" alt="NestCheck" className="h-8" /></Link>
+            <Link href="/" className="text-2xl font-extrabold hover:opacity-80 transition"><span className="text-white">Nest</span><span className="text-[#22c55e]">Check</span></Link>
             <div className="hidden md:flex items-center gap-6">
               <a href="#features" className="text-slate-300 font-semibold hover:text-white transition">Features</a>
               <a href="#pricing" className="text-slate-300 font-semibold hover:text-white transition">Pricing</a>
@@ -561,7 +561,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 pb-6 border-b border-slate-800">
             <div className="flex items-center gap-2 mb-4 md:mb-0">
-              <Link href="/" className="hover:opacity-80 transition"><img src="/NESTCHECK.png" alt="NestCheck" className="h-6" /></Link>
+              <Link href="/" className="text-xl font-extrabold"><span className="text-white">Nest</span><span className="text-[#22c55e]">Check</span></Link>
               <span className="text-slate-500 text-sm">| Check before you nest</span>
             </div>
             <div className="flex gap-6 text-sm">
