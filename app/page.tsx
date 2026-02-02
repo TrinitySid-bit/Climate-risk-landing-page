@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState, useEffect, useRef } from 'react'
 import CheckoutModal from '@/components/CheckoutModal'
 import Link from 'next/link'
@@ -255,7 +255,7 @@ export default function Home() {
               <button onClick={() => setShowFreeForm(true)} className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white bg-transparent rounded-xl font-bold text-lg hover:bg-white hover:text-[#0c1929] transition">Get FREE Report</button>
               <button onClick={() => openCheckout()} className="w-full sm:w-auto px-8 py-4 bg-[#22c55e] text-white rounded-xl font-bold text-lg hover:bg-[#16a34a] transition">Get Premium - $29.99</button>
             </div>
-            <p className="text-slate-500 text-sm">FREE: Planning zones, schools, parks, childcare & more â€¢ PREMIUM: + Climate risk + Crime data + Electorates</p>
+            <p className="text-slate-500 text-sm">FREE: Planning zones, schools, parks, childcare & more • PREMIUM: + Climate risk + Crime data + Electorates</p>
           </div>
         </div>
 
@@ -263,17 +263,17 @@ export default function Home() {
           <div className="max-w-6xl mx-auto flex flex-wrap justify-center items-center gap-3 text-xs md:text-sm">
             <span className="text-slate-500">Trusted data from:</span>
             <strong className="text-white">CFA Victoria</strong>
-            <span className="text-slate-600">â€¢</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">Bureau of Meteorology</strong>
-            <span className="text-slate-600">â€¢</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">Crime Statistics Agency</strong>
-            <span className="text-slate-600">â€¢</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">Vicmap Planning</strong>
-            <span className="text-slate-600">â€¢</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">AEC & VEC</strong>
-            <span className="text-slate-600">â€¢</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">OpenStreetMap</strong>
-            <span className="text-slate-600">â€¢</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">ACECQA</strong>
             <span className="text-slate-600">•</span>
             <strong className="text-white">ABS Census</strong>
@@ -487,7 +487,7 @@ export default function Home() {
               </ul>
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-xs text-green-800"><strong>Why Premium?</strong> Photos don't show flood zones, bushfire ratings, or crime hotspots. Premium reveals what agents won't tell you â€” protect your investment and your family.</div>
               <button onClick={() => openCheckout()} className="w-full py-3 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-[#16a34a] transition">Get Premium Report</button>
-              <p className="text-center text-slate-500 text-xs mt-3">One-time payment â€¢ No subscriptions</p>
+              <p className="text-center text-slate-500 text-xs mt-3">One-time payment • No subscriptions</p>
             </div>
           </div>
         </div>
@@ -572,8 +572,8 @@ export default function Home() {
             </div>
           </div>
           <div className="text-center text-xs text-slate-500">
-            <p>Â© 2026 NestCheck. ABN 48 670 311 318. Made in Victoria, Australia.</p>
-            <p className="mt-1">Data: Â© State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap, ABS Census. CC BY 4.0.</p>
+            <p>© 2026 NestCheck. ABN 48 670 311 318. Made in Victoria, Australia.</p>
+            <p className="mt-1">Data: © State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap, ABS Census. CC BY 4.0.</p>
           </div>
         </div>
       </footer>
