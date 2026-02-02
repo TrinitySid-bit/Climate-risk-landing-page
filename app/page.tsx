@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect, useRef } from 'react'
 import CheckoutModal from '@/components/CheckoutModal'
 import Link from 'next/link'
@@ -154,10 +154,10 @@ export default function Home() {
       {/* FREE REPORT BANNER */}
       <div className="bg-gradient-to-r from-[#22c55e] to-[#16a34a] px-4 py-4 text-center">
         <div className="max-w-4xl mx-auto">
-          <p className="text-white font-bold text-lg md:text-xl mb-1">🏠 ATTENTION Victorians: Get a FREE Property Report!</p>
+          <p className="text-white font-bold text-lg md:text-xl mb-1">ðŸ  ATTENTION Victorians: Get a FREE Property Report!</p>
           <p className="text-green-100 text-sm mb-2">Planning zones, schools, hospitals, transport, parks, trails, EV chargers, childcare & more - completely free. No credit card required.</p>
-          <p className="text-yellow-200 text-xs font-semibold mb-3">🆕 NOW WITH 1,000,000+ DATA POINTS: Planning zones, electorates, water & fire authorities!</p>
-          <button onClick={() => setShowFreeForm(true)} className="bg-white text-[#16a34a] px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition shadow-lg">Get Your FREE Report →</button>
+          <p className="text-yellow-200 text-xs font-semibold mb-3">ðŸ†• NOW WITH 1,000,000+ DATA POINTS: Planning zones, electorates, water & fire authorities!</p>
+          <button onClick={() => setShowFreeForm(true)} className="bg-white text-[#16a34a] px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition shadow-lg">Get Your FREE Report â†’</button>
         </div>
       </div>
 
@@ -165,11 +165,11 @@ export default function Home() {
       {showFreeForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 relative">
-            <button onClick={() => { setShowFreeForm(false); setFreeSuccess(false); }} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">×</button>
+            <button onClick={() => { setShowFreeForm(false); setFreeSuccess(false); }} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">Ã—</button>
             
             {freeSuccess ? (
               <div className="text-center py-8">
-                <div className="text-5xl mb-4">🎉</div>
+                <div className="text-5xl mb-4">ðŸŽ‰</div>
                 <h3 className="text-2xl font-bold text-[#0c1929] mb-2">Report on its way!</h3>
                 <p className="text-slate-600 mb-4">Check your email in the next few minutes.</p>
                 <p className="text-sm text-slate-500">Want the full picture with crime & climate data?</p>
@@ -237,7 +237,7 @@ export default function Home() {
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">Know Everything About Your Property</h1>
             <p className="text-xl md:text-2xl text-[#22c55e] font-semibold italic mb-6">Check before you nest</p>
-            <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">Climate risk, planning zones, crime statistics, schools, hospitals, and transport — all in one comprehensive property intelligence report.</p>
+            <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">Climate risk, planning zones, crime statistics, schools, hospitals, and transport â€” all in one comprehensive property intelligence report.</p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
               <div className="flex -space-x-3">
@@ -255,7 +255,7 @@ export default function Home() {
               <button onClick={() => setShowFreeForm(true)} className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white bg-transparent rounded-xl font-bold text-lg hover:bg-white hover:text-[#0c1929] transition">Get FREE Report</button>
               <button onClick={() => openCheckout()} className="w-full sm:w-auto px-8 py-4 bg-[#22c55e] text-white rounded-xl font-bold text-lg hover:bg-[#16a34a] transition">Get Premium - $29.99</button>
             </div>
-            <p className="text-slate-500 text-sm">FREE: Planning zones, schools, parks, childcare & more • PREMIUM: + Climate risk + Crime data + Electorates</p>
+            <p className="text-slate-500 text-sm">FREE: Planning zones, schools, parks, childcare & more â€¢ PREMIUM: + Climate risk + Crime data + Electorates</p>
           </div>
         </div>
 
@@ -263,19 +263,19 @@ export default function Home() {
           <div className="max-w-6xl mx-auto flex flex-wrap justify-center items-center gap-3 text-xs md:text-sm">
             <span className="text-slate-500">Trusted data from:</span>
             <strong className="text-white">CFA Victoria</strong>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">â€¢</span>
             <strong className="text-white">Bureau of Meteorology</strong>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">â€¢</span>
             <strong className="text-white">Crime Statistics Agency</strong>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">â€¢</span>
             <strong className="text-white">Vicmap Planning</strong>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">â€¢</span>
             <strong className="text-white">AEC & VEC</strong>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">â€¢</span>
             <strong className="text-white">OpenStreetMap</strong>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">â€¢</span>
             <strong className="text-white">ACECQA</strong>
-            <span className="text-slate-600">�</span>
+            <span className="text-slate-600">•</span>
             <strong className="text-white">ABS Census</strong>
           </div>
         </div>
@@ -295,7 +295,7 @@ export default function Home() {
             <div className="bg-[#22c55e] rounded-xl p-5 md:p-6 text-center"><div className="text-2xl md:text-3xl font-extrabold text-white mb-1">5 minutes</div><div className="text-green-100 text-xs md:text-sm">To get insights that save thousands</div></div>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-5"><div className="text-red-700 font-bold mb-2 text-sm">Without NestCheck</div><p className="text-slate-600 text-sm">"We bought our dream home, then discovered it was in a bushfire zone. Insurance quoted us $8,000/year — triple what we budgeted."</p></div>
+            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-5"><div className="text-red-700 font-bold mb-2 text-sm">Without NestCheck</div><p className="text-slate-600 text-sm">"We bought our dream home, then discovered it was in a bushfire zone. Insurance quoted us $8,000/year â€” triple what we budgeted."</p></div>
             <div className="bg-red-50 border-2 border-red-200 rounded-xl p-5"><div className="text-red-700 font-bold mb-2 text-sm">Without NestCheck</div><p className="text-slate-600 text-sm">"The heritage overlay means we can't renovate without council approval. No one mentioned this before we signed."</p></div>
             <div className="bg-green-50 border-2 border-green-200 rounded-xl p-5"><div className="text-[#166534] font-bold mb-2 text-sm">With NestCheck</div><p className="text-slate-600 text-sm">"We checked three properties before buying. NestCheck showed us which had the lowest risk. Best $30 we ever spent."</p></div>
           </div>
@@ -311,12 +311,12 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[
-              { icon: '🏠', title: 'Property Buyers', desc: 'Know risks and overlays before signing.' },
-              { icon: '🔑', title: 'Homeowners', desc: "Understand your property's risk profile." },
-              { icon: '📊', title: 'Investors', desc: 'Assess risk across your portfolio.' },
-              { icon: '🏢', title: 'Real Estate Agents', desc: 'Data-backed insights for clients.' },
-              { icon: '📋', title: 'Portfolio Managers', desc: 'Monitor risk across properties.' },
-              { icon: '🛋️', title: 'Renters', desc: 'Check before signing a lease.' },
+              { icon: 'ðŸ ', title: 'Property Buyers', desc: 'Know risks and overlays before signing.' },
+              { icon: 'ðŸ”‘', title: 'Homeowners', desc: "Understand your property's risk profile." },
+              { icon: 'ðŸ“Š', title: 'Investors', desc: 'Assess risk across your portfolio.' },
+              { icon: 'ðŸ¢', title: 'Real Estate Agents', desc: 'Data-backed insights for clients.' },
+              { icon: 'ðŸ“‹', title: 'Portfolio Managers', desc: 'Monitor risk across properties.' },
+              { icon: 'ðŸ›‹ï¸', title: 'Renters', desc: 'Check before signing a lease.' },
             ].map((item) => (
               <div key={item.title} className="bg-white border border-slate-200 rounded-xl p-5 text-center hover:border-[#22c55e] hover:shadow-md transition">
                 <div className="text-3xl mb-3">{item.icon}</div>
@@ -338,64 +338,64 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-4">
             <div className="bg-white border-2 border-[#22c55e] rounded-xl p-5 relative">
               <div className="absolute -top-2.5 right-4 bg-[#22c55e] text-white text-xs font-bold px-3 py-1 rounded-full">PREMIUM</div>
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-xl mb-4">🔥</div>
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-xl mb-4">ðŸ”¥</div>
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Climate Risk Analysis</h3>
               <p className="text-slate-500 text-sm mb-3">Bushfire, flood, and storm risk scores based on 20+ years of data.</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Bushfire Prone Area status</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Flood zone proximity</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Historical storm events</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Bushfire Prone Area status</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Flood zone proximity</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Historical storm events</li>
               </ul>
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-xl mb-4">📋</div>
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-xl mb-4">ðŸ“‹</div>
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Planning Zones & Overlays</h3>
-              <p className="text-slate-500 text-sm mb-3">Know your zoning and what restrictions apply — heritage, environmental, development.</p>
+              <p className="text-slate-500 text-sm mb-3">Know your zoning and what restrictions apply â€” heritage, environmental, development.</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Planning zone with explanation</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Heritage & Bushfire Overlays</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> 25+ overlay types checked</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Planning zone with explanation</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Heritage & Bushfire Overlays</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> 25+ overlay types checked</li>
               </ul>
             </div>
             <div className="bg-white border-2 border-[#22c55e] rounded-xl p-5 relative">
               <div className="absolute -top-2.5 right-4 bg-[#22c55e] text-white text-xs font-bold px-3 py-1 rounded-full">PREMIUM</div>
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-xl mb-4">🛡️</div>
+              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-xl mb-4">ðŸ›¡ï¸</div>
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Crime & Safety</h3>
               <p className="text-slate-500 text-sm mb-3">10 years of real crime statistics and safety analysis.</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Safety score by suburb</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Crime breakdown by category</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> 10-year trend analysis</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Safety score by suburb</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Crime breakdown by category</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> 10-year trend analysis</li>
               </ul>
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-xl mb-4">🎓</div>
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-xl mb-4">ðŸŽ“</div>
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Schools & Childcare</h3>
               <p className="text-slate-500 text-sm mb-3">Nearby schools and childcare centres with quality ratings.</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> All nearby schools listed</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Childcare with NQS ratings</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Distance from property</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> All nearby schools listed</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Childcare with NQS ratings</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Distance from property</li>
               </ul>
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-xl mb-4">🏥</div>
+              <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-xl mb-4">ðŸ¥</div>
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Community Profile</h3>
               <p className="text-slate-500 text-sm mb-3">Census demographics, hospitals, utilities and local services.</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Census demographics</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Hospitals & pharmacies</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Water & fire authorities</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Census demographics</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Hospitals & pharmacies</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Water & fire authorities</li>
               </ul>
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 hover:border-[#0c1929] transition">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-xl mb-4">🚆</div>
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-xl mb-4">ðŸš†</div>
               <h3 className="text-lg font-bold text-[#0c1929] mb-2">Transport & Mobility</h3>
               <p className="text-slate-500 text-sm mb-3">Public transport, EV charging, parks and bike paths.</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Trains, trams, buses</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> EV charging stations</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Parks & walking trails</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Trains, trams, buses</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> EV charging stations</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Parks & walking trails</li>
               </ul>
             </div>
           </div>
@@ -422,17 +422,17 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#0c1929] text-center mb-10">What Property Buyers Are Saying</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5">
-              <div className="text-yellow-500 mb-3">★★★★★</div>
+              <div className="text-yellow-500 mb-3">â˜…â˜…â˜…â˜…â˜…</div>
               <blockquote className="text-slate-600 text-sm mb-4">"We almost bought in Kinglake until we saw the bushfire risk score. This tool saved us from a huge mistake."</blockquote>
               <div className="flex items-center gap-3"><img src="https://i.pravatar.cc/100?img=25" alt="" className="w-10 h-10 rounded-full" /><div><div className="font-bold text-[#0c1929] text-sm">Sarah M.</div><div className="text-xs text-slate-500">First Home Buyer, Melbourne</div></div></div>
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5">
-              <div className="text-yellow-500 mb-3">★★★★★</div>
+              <div className="text-yellow-500 mb-3">â˜…â˜…â˜…â˜…â˜…</div>
               <blockquote className="text-slate-600 text-sm mb-4">"The planning overlay check was a game-changer. Found out about a heritage overlay that would've blocked our renovations."</blockquote>
               <div className="flex items-center gap-3"><img src="https://i.pravatar.cc/100?img=33" alt="" className="w-10 h-10 rounded-full" /><div><div className="font-bold text-[#0c1929] text-sm">James T.</div><div className="text-xs text-slate-500">Property Investor, Geelong</div></div></div>
             </div>
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5">
-              <div className="text-yellow-500 mb-3">★★★★★</div>
+              <div className="text-yellow-500 mb-3">â˜…â˜…â˜…â˜…â˜…</div>
               <blockquote className="text-slate-600 text-sm mb-4">"As a buyer's agent, I run NestCheck on every property. The crime trends and school data is invaluable."</blockquote>
               <div className="flex items-center gap-3"><img src="https://i.pravatar.cc/100?img=47" alt="" className="w-10 h-10 rounded-full" /><div><div className="font-bold text-[#0c1929] text-sm">Michelle L.</div><div className="text-xs text-slate-500">Buyer's Agent, Brighton</div></div></div>
             </div>
@@ -453,20 +453,20 @@ export default function Home() {
               <div className="text-4xl font-extrabold text-[#0c1929] mb-1">$0</div>
               <p className="text-slate-500 text-sm mb-5">Essential property information</p>
               <ul className="space-y-2 mb-6 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> Property Location & Details</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Planning Zone</strong> (with explanation)</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Water Provider & Fire Authority</strong></li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> 25+ Planning Overlays</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Schools & Hospitals</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Public Transport</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Air Quality Analysis</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Mobile Coverage</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Parks, Trails & Bike Paths</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> EV Charging Stations</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Supermarkets, Cafes & Pharmacies</li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> Childcare Centres (with ratings)</li>
-                <li><span className="text-slate-400">✗</span> <span className="text-slate-400">Climate Risk Scores</span></li>
-                <li><span className="text-slate-400">✗</span> <span className="text-slate-400">Crime & Safety Analysis</span></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Property Location & Details</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Planning Zone</strong> (with explanation)</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Water Provider & Fire Authority</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> 25+ Planning Overlays</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Schools & Hospitals</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Public Transport</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Air Quality Analysis</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Mobile Coverage</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Parks, Trails & Bike Paths</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> EV Charging Stations</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Supermarkets, Cafes & Pharmacies</li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> Childcare Centres (with ratings)</li>
+                <li><span className="text-slate-400">âœ—</span> <span className="text-slate-400">Climate Risk Scores</span></li>
+                <li><span className="text-slate-400">âœ—</span> <span className="text-slate-400">Crime & Safety Analysis</span></li>
               </ul>
               <button onClick={() => setShowFreeForm(true)} className="w-full py-3 border-2 border-[#0c1929] text-[#0c1929] rounded-lg font-bold hover:bg-[#0c1929] hover:text-white transition">Get Free Report</button>
             </div>
@@ -476,18 +476,18 @@ export default function Home() {
               <div className="text-4xl font-extrabold text-[#0c1929] mb-1">$29.99</div>
               <p className="text-slate-500 text-sm mb-5">Complete property intelligence</p>
               <ul className="space-y-2 mb-4 text-sm text-slate-600">
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Everything in Free</strong></li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Climate Risk Scores</strong></li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Bushfire, Flood & Storm Analysis</strong></li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Crime & Safety Score</strong></li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>10-Year Crime Trends</strong></li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Serious Crime Breakdown</strong></li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Lifestyle Score (0-100)</strong></li>
-                <li><span className="text-[#22c55e] font-bold">✔</span> <strong>Federal & State Electorates</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Everything in Free</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Climate Risk Scores</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Bushfire, Flood & Storm Analysis</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Crime & Safety Score</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>10-Year Crime Trends</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Serious Crime Breakdown</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Lifestyle Score (0-100)</strong></li>
+                <li><span className="text-[#22c55e] font-bold">âœ”</span> <strong>Federal & State Electorates</strong></li>
               </ul>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-xs text-green-800"><strong>Why Premium?</strong> Photos don't show flood zones, bushfire ratings, or crime hotspots. Premium reveals what agents won't tell you — protect your investment and your family.</div>
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-xs text-green-800"><strong>Why Premium?</strong> Photos don't show flood zones, bushfire ratings, or crime hotspots. Premium reveals what agents won't tell you â€” protect your investment and your family.</div>
               <button onClick={() => openCheckout()} className="w-full py-3 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-[#16a34a] transition">Get Premium Report</button>
-              <p className="text-center text-slate-500 text-xs mt-3">One-time payment • No subscriptions</p>
+              <p className="text-center text-slate-500 text-xs mt-3">One-time payment â€¢ No subscriptions</p>
             </div>
           </div>
         </div>
@@ -499,10 +499,10 @@ export default function Home() {
           <h2 className="text-2xl font-extrabold text-white mb-3">Need Unlimited Reports or API Access?</h2>
           <p className="text-slate-400 mb-8">For real estate agencies, buyer's agents, mortgage brokers, and property portals.</p>
           <div className="flex flex-wrap justify-center gap-4 mb-8 text-slate-300 text-sm">
-            <span><span className="text-[#22c55e]">✔</span> Unlimited reports</span>
-            <span><span className="text-[#22c55e]">✔</span> API access</span>
-            <span><span className="text-[#22c55e]">✔</span> White-label</span>
-            <span><span className="text-[#22c55e]">✔</span> Priority support</span>
+            <span><span className="text-[#22c55e]">âœ”</span> Unlimited reports</span>
+            <span><span className="text-[#22c55e]">âœ”</span> API access</span>
+            <span><span className="text-[#22c55e]">âœ”</span> White-label</span>
+            <span><span className="text-[#22c55e]">âœ”</span> Priority support</span>
           </div>
           <a href="mailto:hello@nestcheck.com.au" className="inline-block bg-white text-[#0c1929] px-8 py-3 rounded-lg font-bold hover:bg-slate-100 transition">Get in Touch</a>
         </div>
@@ -524,12 +524,12 @@ export default function Home() {
               { q: "What's included in the FREE report?", a: "The free report includes property details, planning zone with plain-English explanation, water provider, fire authority, 25+ planning overlays, nearby schools, hospitals, public transport, air quality, mobile coverage, parks & trails, EV charging stations, supermarkets, cafes, pharmacies, and childcare centres with quality ratings. Over 1,000,000 data points!" },
               { q: "What extra do I get with Premium?", a: "Premium adds climate risk scores (bushfire, flood, storm), crime & safety analysis, 10-year crime trends, detailed crime breakdowns, Lifestyle Score, and your Federal & State electorates. Essential data for making a fully informed decision." },
               { q: "How do the scores work?", a: "All risk scores are out of 100, lower is better (like golf!). 0-20 = low risk, 21-40 = medium, 41-60 = high, 61-100 = extreme risk." },
-              { q: "What are planning overlays?", a: "Government controls that restrict what you can build or renovate. Heritage overlays, bushfire overlays, flood overlays — we check 25+ types." },
+              { q: "What are planning overlays?", a: "Government controls that restrict what you can build or renovate. Heritage overlays, bushfire overlays, flood overlays â€” we check 25+ types." },
               { q: "Does this replace a building inspection?", a: "No. NestCheck covers location-based risks. You still need a professional building inspection for structural issues." },
               { q: "How quickly will I get my report?", a: "Reports are generated instantly and delivered to your email within minutes as a professional PDF." },
             ].map((faq, i) => (
               <details key={i} className="border border-slate-200 rounded-lg overflow-hidden group">
-                <summary className="px-5 py-4 cursor-pointer font-semibold text-[#0c1929] hover:bg-slate-50 list-none flex justify-between items-center">{faq.q}<span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span></summary>
+                <summary className="px-5 py-4 cursor-pointer font-semibold text-[#0c1929] hover:bg-slate-50 list-none flex justify-between items-center">{faq.q}<span className="text-slate-400 group-open:rotate-180 transition-transform">â–¼</span></summary>
                 <div className="px-5 pb-4 text-slate-600 text-sm">{faq.a}</div>
               </details>
             ))}
@@ -572,8 +572,8 @@ export default function Home() {
             </div>
           </div>
           <div className="text-center text-xs text-slate-500">
-            <p>© 2026 NestCheck. ABN 48 670 311 318. Made in Victoria, Australia.</p>
-            <p className="mt-1">Data: © State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap, ABS Census. CC BY 4.0.</p>
+            <p>Â© 2026 NestCheck. ABN 48 670 311 318. Made in Victoria, Australia.</p>
+            <p className="mt-1">Data: Â© State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap, ABS Census. CC BY 4.0.</p>
           </div>
         </div>
       </footer>
