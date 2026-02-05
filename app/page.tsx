@@ -574,6 +574,7 @@ export default function Home() {
           <div className="text-center text-xs text-slate-500">
             <p>© 2026 NestCheck. ABN 48 670 311 318. Made in Victoria, Australia.</p>
             <p className="mt-1">Data: © State of Victoria, AEC, VEC, OpenStreetMap, ACECQA, OpenChargeMap, ABS Census. CC BY 4.0.</p>
+            <p className="mt-3 text-slate-400">Also by <span className="text-white font-semibold">Melbourne Shadow Supercoder</span>: <a href="https://tradietruth.com.au" target="_blank" rel="noopener noreferrer" className="text-[#f59e0b] hover:text-[#fbbf24] font-semibold transition">TradieTruth</a> — Got a trade quote? Find out if it&apos;s fair.</p>
           </div>
         </div>
       </footer>
