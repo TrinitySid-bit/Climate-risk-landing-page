@@ -32,7 +32,7 @@ export default function SampleReportPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h2 className="text-xl font-bold text-[#0c1929]">123 Sample Street, Richmond VIC 3121</h2>
+              <h2 className="text-xl font-bold text-[#0c1929]">10 Park Street, South Melbourne VIC 3205</h2>
               <p className="text-slate-500">Sample Premium Report</p>
             </div>
             <div className="flex gap-3">
