@@ -45,14 +45,7 @@ export default async function BlogPost({ params }) {
 
       <article className="max-w-5xl mx-auto px-6 py-12 bg-white my-8 rounded-lg shadow-sm">
         <div 
-          className="prose prose-lg
-                     prose-headings:font-serif prose-headings:text-stone-900
-                     prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-5 prose-h2:border-b prose-h2:border-stone-200 prose-h2:pb-3
-                     prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-sky-700 prose-h3:font-semibold
-                     prose-p:text-stone-700 prose-p:leading-relaxed prose-p:mb-6 prose-p:text-base
-                     prose-a:text-sky-600 prose-a:font-medium prose-a:no-underline hover:prose-a:underline
-                     prose-strong:text-stone-900 prose-strong:font-semibold
-                     prose-ul:my-6 prose-ul:space-y-2 prose-li:text-stone-700"
+          className="prose prose-lg prose-stone max-w-none"
           dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
         />
       </article>
