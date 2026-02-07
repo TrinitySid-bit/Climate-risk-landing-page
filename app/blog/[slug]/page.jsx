@@ -45,7 +45,7 @@ export default async function BlogPost({ params }) {
 
       <article className="max-w-5xl mx-auto px-6 py-12 bg-white my-8 rounded-lg shadow-sm">
         <div 
-          className="prose prose-lg max-w-none
+          className="prose prose-lg
                      prose-headings:font-serif prose-headings:text-stone-900
                      prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-5 prose-h2:border-b prose-h2:border-stone-200 prose-h2:pb-3
                      prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-sky-700 prose-h3:font-semibold
