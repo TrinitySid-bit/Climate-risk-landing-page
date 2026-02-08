@@ -222,7 +222,7 @@ export default function Home() {
               <a href="#features" className="text-slate-300 font-semibold hover:text-white transition">Features</a>
               <a href="#pricing" className="text-slate-300 font-semibold hover:text-white transition">Pricing</a>
               <a href="#faq" className="text-slate-300 font-semibold hover:text-white transition">FAQ</a>
-              <Link href="/sample" className="text-slate-300 font-semibold hover:text-white transition">Sample Report</Link>
+              <Link href="/sample" className="text-slate-300 font-semibold hover:text-white transition">Sample Report</Link>`n              <Link href="/blog" className="text-slate-300 font-semibold hover:text-white transition">Blog</Link>
               <button onClick={() => setShowFreeForm(true)} className="text-[#22c55e] font-bold hover:text-white transition">Free Report</button>
               <button onClick={() => openCheckout()} className="bg-[#22c55e] text-white px-5 py-2.5 rounded-lg font-bold hover:bg-[#16a34a] transition">Get Premium</button>
             </div>
@@ -567,7 +567,7 @@ export default function Home() {
             <div className="flex gap-6 text-sm">
               <Link href="/privacy" className="text-slate-400 hover:text-white">Privacy</Link>
               <Link href="/terms" className="text-slate-400 hover:text-white">Terms</Link>
-              <Link href="/sample" className="text-slate-400 hover:text-white">Sample Report</Link>
+              <Link href="/sample" className="text-slate-400 hover:text-white">Sample Report</Link>`n              <Link href="/blog" className="text-slate-400 hover:text-white">Blog</Link>
               <a href="mailto:hello@nestcheck.com.au" className="text-slate-400 hover:text-white">Contact</a>
             </div>
           </div>
@@ -583,3 +583,5 @@ export default function Home() {
     </main>
   )
 }
+
+
