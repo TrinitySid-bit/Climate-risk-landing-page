@@ -1,33 +1,13 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://nestcheck.com.au</loc>
-    <lastmod>2026-02-09</lastmod>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://nestcheck.com.au/blog</loc>
-    <lastmod>2026-02-07</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://nestcheck.com.au/blog/bushfire-risk-check-victoria</loc>
-    <lastmod>2026-02-06</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://nestcheck.com.au/blog/crime-rate-by-suburb-victoria</loc>
-    <lastmod>2026-02-06</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://nestcheck.com.au/blog/flood-zone-check-victoria</loc>
-    <lastmod>2026-02-06</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://nestcheck.com.au/blog/planning-overlays-victoria-explained</loc>
-    <lastmod>2026-02-06</lastmod>
-    <priority>0.7</priority>
-  </url>
+  <url><loc>https://nestcheck.com.au</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://nestcheck.com.au/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nestcheck.com.au/blog/bushfire-risk-check-victoria</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nestcheck.com.au/blog/crime-rate-by-suburb-victoria</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nestcheck.com.au/blog/flood-zone-check-victoria</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nestcheck.com.au/blog/planning-overlays-victoria-explained</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nestcheck.com.au/blog/school-zones-property-prices-melbourne</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nestcheck.com.au/blog/buying-house-near-train-line-melbourne</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nestcheck.com.au/blog/first-home-buyer-checklist-victoria</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nestcheck.com.au/blog/heritage-overlay-victoria-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
