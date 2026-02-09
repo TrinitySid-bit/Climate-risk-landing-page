@@ -1,6 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
+
+const API_URL = 'https://climatescore-api-production.up.railway.app';
 
 const FLOOR_OPTIONS = [
   { value: '', label: '-- Select floor level --' },
@@ -33,11 +35,14 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  
+  const [promoCode, setPromoCode] = useState('');
+  const [promoStatus, setPromoStatus] = useState<any>(null);
+  const [promoChecking, setPromoChecking] = useState(false);
+  const [promoSuccess, setPromoSuccess] = useState(false);
+
   const addressInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<any>(null);
 
-  // Sync address when modal opens or initialAddress changes
   useEffect(() => {
     if (isOpen) {
       setAddress(initialAddress);
@@ -47,18 +52,20 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
       setEmail('');
       setError('');
       setAgreedToTerms(false);
+      setPromoCode('');
+      setPromoStatus(null);
+      setPromoSuccess(false);
       autocompleteRef.current = null;
     }
   }, [isOpen, initialAddress]);
 
-  // Initialize Google Places Autocomplete
   useEffect(() => {
     if (!isOpen || step !== 1 || !addressInputRef.current) return;
-    
+
     const initAutocomplete = () => {
       if (!window.google || !window.google.maps || !window.google.maps.places) return;
       if (autocompleteRef.current) return;
-      
+
       autocompleteRef.current = new window.google.maps.places.Autocomplete(addressInputRef.current, {
         componentRestrictions: { country: 'au' },
         fields: ['formatted_address', 'address_components'],
@@ -69,11 +76,9 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
         const place = autocompleteRef.current?.getPlace();
         if (place?.formatted_address) {
           setAddress(place.formatted_address);
-          
           const state = place.address_components?.find(
             (c: any) => c.types.includes('administrative_area_level_1')
           );
-          
           if (state?.short_name !== 'VIC') {
             setError('Please enter a Victorian address. We currently only cover Victoria.');
           } else {
@@ -102,6 +107,49 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
   }, [isOpen, step]);
 
   if (!isOpen) return null;
+
+  const handlePromoApply = async () => {
+    if (!promoCode.trim()) return;
+    setPromoChecking(true);
+    setPromoStatus(null);
+    try {
+      const r = await fetch(`${API_URL}/api/reports/validate-promo`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode }),
+      });
+      const data = await r.json();
+      setPromoStatus(data);
+    } catch {
+      setPromoStatus({ valid: false, message: 'Error checking code' });
+    }
+    setPromoChecking(false);
+  };
+
+  const handlePromoCheckout = async () => {
+    if (!email.includes('@')) {
+      setError('Please enter a valid email');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      const r = await fetch(`${API_URL}/api/reports/promo-report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address, floor, email, promo_code: promoCode }),
+      });
+      if (r.ok) {
+        setPromoSuccess(true);
+      } else {
+        const data = await r.json();
+        setError(data.detail || 'Something went wrong');
+      }
+    } catch {
+      setError('Something went wrong. Please try again.');
+    }
+    setLoading(false);
+  };
 
   const handleCheckout = async () => {
     if (!agreedToTerms) {
@@ -143,161 +191,210 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
           ×
         </button>
 
-        {/* Progress - Now 2 steps */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          {[1, 2].map((i) => (
-            <div key={i} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${step >= i ? 'bg-[#22c55e] text-white' : 'bg-slate-200 text-slate-500'}`}>
-                {i}
-              </div>
-              {i < 2 && <div className={`w-12 h-0.5 ${step > i ? 'bg-[#22c55e]' : 'bg-slate-200'}`}></div>}
-            </div>
-          ))}
-        </div>
-
-        {/* Step 1: Address */}
-        {step === 1 && (
-          <div>
-            <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Enter Property Details</h2>
-            <p className="text-slate-500 text-center text-sm mb-6">We'll generate a comprehensive report for this property</p>
-
-            <div className="mb-4">
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Property Address <span className="text-red-500">*</span>
-              </label>
-              <input
-                ref={addressInputRef}
-                type="text"
-                placeholder="Start typing a Victorian address..."
-                value={address}
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                  setError('');
-                }}
-                className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] focus:outline-none text-slate-800"
-                autoComplete="off"
-              />
-              <p className="text-xs text-slate-400 mt-1">Enter any Victorian address</p>
+        {/* Promo Success */}
+        {promoSuccess ? (
+          <div className="text-center py-8">
+            <div className="text-5xl mb-4">🎉</div>
+            <h3 className="text-2xl font-bold text-[#0c1929] mb-2">Premium Report on its way!</h3>
+            <p className="text-slate-600 mb-2">Promo code <strong className="text-[#22c55e]">{promoCode.toUpperCase()}</strong> applied.</p>
+            <p className="text-slate-500 text-sm">Check your email in the next few minutes for your full premium report.</p>
+            <button onClick={onClose} className="mt-6 bg-[#22c55e] text-white px-6 py-2 rounded-lg font-bold hover:bg-[#16a34a] transition">Done</button>
+          </div>
+        ) : (
+          <>
+            {/* Progress */}
+            <div className="flex items-center justify-center gap-2 mb-6">
+              {[1, 2].map((i) => (
+                <div key={i} className="flex items-center">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${step >= i ? 'bg-[#22c55e] text-white' : 'bg-slate-200 text-slate-500'}`}>
+                    {i}
+                  </div>
+                  {i < 2 && <div className={`w-12 h-0.5 ${step > i ? 'bg-[#22c55e]' : 'bg-slate-200'}`}></div>}
+                </div>
+              ))}
             </div>
 
-            <div className="mb-6">
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Floor Level <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={floor}
-                onChange={(e) => setFloor(e.target.value)}
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:border-[#22c55e] focus:outline-none bg-white text-slate-800 ${!floor ? 'border-amber-300 bg-amber-50' : 'border-slate-200'}`}
-              >
-                {FLOOR_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-              <p className="text-xs text-slate-500 mt-1">
-                <strong>Required:</strong> Floor level affects flood risk, storm damage, and safety scores
-              </p>
-            </div>
+            {/* Step 1: Address */}
+            {step === 1 && (
+              <div>
+                <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Enter Property Details</h2>
+                <p className="text-slate-500 text-center text-sm mb-6">We&apos;ll generate a comprehensive report for this property</p>
 
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
-                {error}
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Property Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={addressInputRef}
+                    type="text"
+                    placeholder="Start typing a Victorian address..."
+                    value={address}
+                    onChange={(e) => { setAddress(e.target.value); setError(''); }}
+                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] focus:outline-none text-slate-800"
+                    autoComplete="off"
+                  />
+                  <p className="text-xs text-slate-400 mt-1">Enter any Victorian address</p>
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Floor Level <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={floor}
+                    onChange={(e) => setFloor(e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:border-[#22c55e] focus:outline-none bg-white text-slate-800 ${!floor ? 'border-amber-300 bg-amber-50' : 'border-slate-200'}`}
+                  >
+                    {FLOOR_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-slate-500 mt-1">
+                    <strong>Required:</strong> Floor level affects flood risk, storm damage, and safety scores
+                  </p>
+                </div>
+
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setStep(2)}
+                  disabled={!canProceedStep1}
+                  className="w-full py-3 bg-[#22c55e] text-white rounded-lg font-semibold hover:bg-[#16a34a] transition disabled:bg-slate-300 disabled:cursor-not-allowed"
+                >
+                  Continue
+                </button>
               </div>
             )}
 
-            <button
-              onClick={() => setStep(2)}
-              disabled={!canProceedStep1}
-              className="w-full py-3 bg-[#22c55e] text-white rounded-lg font-semibold hover:bg-[#16a34a] transition disabled:bg-slate-300 disabled:cursor-not-allowed"
-            >
-              Continue
-            </button>
-          </div>
-        )}
+            {/* Step 2: Email & Checkout */}
+            {step === 2 && (
+              <div>
+                <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Complete Your Order</h2>
+                <p className="text-slate-500 text-center text-sm mb-6">Enter your email to receive your Premium report</p>
 
-        {/* Step 2: Email & Checkout */}
-        {step === 2 && (
-          <div>
-            <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Complete Your Order</h2>
-            <p className="text-slate-500 text-center text-sm mb-6">Enter your email to receive your Premium report</p>
+                {/* What's Included */}
+                <div className="bg-green-50 border-2 border-[#22c55e] rounded-xl p-4 mb-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-bold text-[#0c1929]">Premium Report</span>
+                    <span className={`text-2xl font-bold ${promoStatus?.valid ? 'line-through text-slate-400' : 'text-[#22c55e]'}`}>$29.99</span>
+                  </div>
+                  {promoStatus?.valid && (
+                    <div className="text-[#22c55e] font-bold text-lg mb-2">FREE with code {promoCode.toUpperCase()}</div>
+                  )}
+                  <ul className="text-sm text-slate-600 space-y-1">
+                    <li>✓ Climate Risk Scores (Bushfire, Flood, Storm)</li>
+                    <li>✓ 25+ Planning Overlays</li>
+                    <li>✓ Crime & Safety Analysis</li>
+                    <li>✓ 10-Year Crime Trends</li>
+                    <li>✓ Schools, Hospitals, Transport</li>
+                    <li>✓ Air Quality Analysis</li>
+                  </ul>
+                </div>
 
-            {/* What's Included */}
-            <div className="bg-green-50 border-2 border-[#22c55e] rounded-xl p-4 mb-4">
-              <div className="flex justify-between items-center mb-3">
-                <span className="font-bold text-[#0c1929]">Premium Report</span>
-                <span className="text-2xl font-bold text-[#22c55e]">$29.99</span>
-              </div>
-              <ul className="text-sm text-slate-600 space-y-1">
-                <li>✓ Climate Risk Scores (Bushfire, Flood, Storm)</li>
-                <li>✓ 25+ Planning Overlays</li>
-                <li>✓ Crime & Safety Analysis</li>
-                <li>✓ 10-Year Crime Trends</li>
-                <li>✓ Schools, Hospitals, Transport</li>
-                <li>✓ Air Quality Analysis</li>
-              </ul>
-            </div>
+                {/* Summary */}
+                <div className="bg-slate-50 rounded-xl p-4 mb-4 text-sm">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-slate-500">Property:</span>
+                    <span className="text-slate-800 font-medium text-right max-w-[200px] truncate">{address}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Floor:</span>
+                    <span className="text-slate-800">{FLOOR_OPTIONS.find(f => f.value === floor)?.label || 'Not selected'}</span>
+                  </div>
+                </div>
 
-            {/* Summary */}
-            <div className="bg-slate-50 rounded-xl p-4 mb-4 text-sm">
-              <div className="flex justify-between mb-2">
-                <span className="text-slate-500">Property:</span>
-                <span className="text-slate-800 font-medium text-right max-w-[200px] truncate">{address}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Floor:</span>
-                <span className="text-slate-800">{FLOOR_OPTIONS.find(f => f.value === floor)?.label || 'Not selected'}</span>
-              </div>
-            </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] focus:outline-none text-slate-800"
+                  />
+                  <p className="text-xs text-slate-400 mt-1">Your report will be sent to this email</p>
+                </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Email Address <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] focus:outline-none text-slate-800"
-              />
-              <p className="text-xs text-slate-400 mt-1">Your report will be sent to this email</p>
-            </div>
+                {/* Promo Code */}
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Promo Code (optional)</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoStatus(null); }}
+                      placeholder="Enter code"
+                      className="flex-1 px-4 py-2 border-2 border-slate-200 rounded-lg focus:border-[#22c55e] focus:outline-none text-slate-800 font-mono uppercase"
+                    />
+                    <button
+                      onClick={handlePromoApply}
+                      disabled={!promoCode.trim() || promoChecking}
+                      className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-semibold hover:bg-slate-200 transition disabled:opacity-50"
+                    >
+                      {promoChecking ? '...' : 'Apply'}
+                    </button>
+                  </div>
+                  {promoStatus && (
+                    <p className={`text-xs mt-1 ${promoStatus.valid ? 'text-[#22c55e]' : 'text-red-500'}`}>
+                      {promoStatus.message}
+                    </p>
+                  )}
+                </div>
 
-            {/* Terms */}
-            <label className="flex items-start gap-2 mb-4 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={agreedToTerms}
-                onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="mt-1 accent-[#22c55e]"
-              />
-              <span className="text-xs text-slate-600">
-                I agree to the <a href="/terms" target="_blank" className="text-[#22c55e] hover:underline">Terms of Service</a> and understand that NestCheck provides informational data only, not financial, legal, or insurance advice.
-              </span>
-            </label>
+                {/* Terms */}
+                <label className="flex items-start gap-2 mb-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    className="mt-1 accent-[#22c55e]"
+                  />
+                  <span className="text-xs text-slate-600">
+                    I agree to the <a href="/terms" target="_blank" className="text-[#22c55e] hover:underline">Terms of Service</a> and understand that NestCheck provides informational data only, not financial, legal, or insurance advice.
+                  </span>
+                </label>
 
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
-                {error}
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button onClick={() => setStep(1)} className="flex-1 py-3 border-2 border-slate-200 text-slate-600 rounded-lg font-semibold hover:bg-slate-50 transition">
+                    Back
+                  </button>
+                  {promoStatus?.valid ? (
+                    <button
+                      onClick={handlePromoCheckout}
+                      disabled={loading || !email.includes('@') || !agreedToTerms}
+                      className="flex-1 py-3 bg-[#22c55e] text-white rounded-lg font-semibold hover:bg-[#16a34a] transition disabled:bg-slate-300 disabled:cursor-not-allowed"
+                    >
+                      {loading ? 'Generating...' : 'Get Free Premium Report'}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCheckout}
+                      disabled={loading || !email.includes('@') || !agreedToTerms}
+                      className="flex-1 py-3 bg-[#22c55e] text-white rounded-lg font-semibold hover:bg-[#16a34a] transition disabled:bg-slate-300 disabled:cursor-not-allowed"
+                    >
+                      {loading ? 'Processing...' : 'Pay $29.99'}
+                    </button>
+                  )}
+                </div>
+
+                <p className="text-center text-xs text-slate-400 mt-4">
+                  🔒 Secure payment powered by Stripe
+                </p>
               </div>
             )}
-
-            <div className="flex gap-3">
-              <button onClick={() => setStep(1)} className="flex-1 py-3 border-2 border-slate-200 text-slate-600 rounded-lg font-semibold hover:bg-slate-50 transition">
-                Back
-              </button>
-              <button
-                onClick={handleCheckout}
-                disabled={loading || !email.includes('@')}
-                className="flex-1 py-3 bg-[#22c55e] text-white rounded-lg font-semibold hover:bg-[#16a34a] transition disabled:bg-slate-300 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Processing...' : 'Pay $29.99'}
-              </button>
-            </div>
-
-            <p className="text-center text-xs text-slate-400 mt-4">
-              🔒 Secure payment powered by Stripe
-            </p>
-          </div>
+          </>
         )}
       </div>
     </div>
