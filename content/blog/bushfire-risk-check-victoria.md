@@ -23,6 +23,14 @@ The Bushfire Attack Level is a standardised measure of a building's potential ex
 | BAL-40 | Very High | Severe risk including direct flame contact possible. Extensive bushfire construction requirements. Insurance premiums significantly elevated. |
 | BAL-FZ | Flame Zone | Direct exposure to flames. The most stringent construction requirements. Some insurers will not cover properties in this zone. |
 
+
+---
+
+> **🏡 Check any Victorian address instantly — free.**
+> [Get your NestCheck property report](https://nestcheck.com.au) covering climate risk, crime stats, schools, transport, and planning overlays in 30 seconds.
+
+---
+
 ## How to Check Your Property's Bushfire Risk
 
 ### Option 1: NestCheck (free, instant)

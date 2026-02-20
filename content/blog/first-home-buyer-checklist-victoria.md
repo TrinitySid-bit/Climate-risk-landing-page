@@ -54,6 +54,14 @@ Eligibility includes income caps and property price caps that vary by location. 
 
 You can withdraw up to $50,000 in voluntary super contributions (plus associated earnings) to put toward your first home deposit. This is a federal scheme that provides a tax benefit because contributions are taxed at 15% rather than your marginal tax rate.
 
+
+---
+
+> **🏡 Check any Victorian address instantly — free.**
+> [Get your NestCheck property report](https://nestcheck.com.au) covering climate risk, crime stats, schools, transport, and planning overlays in 30 seconds.
+
+---
+
 ## Property Search Checklist
 
 ### 6. Location research

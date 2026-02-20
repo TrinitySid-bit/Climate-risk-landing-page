@@ -22,6 +22,14 @@ The Victorian Planning Scheme uses three main overlays to identify flood-affecte
 
 💡 **Key difference:** The LSIO and FO relate to riverine flooding (rivers and creeks overflowing). The SBO relates to overland flow flooding (stormwater overwhelming drains). A property can be affected by one, multiple, or none of these.
 
+
+---
+
+> **🏡 Check any Victorian address instantly — free.**
+> [Get your NestCheck property report](https://nestcheck.com.au) covering climate risk, crime stats, schools, transport, and planning overlays in 30 seconds.
+
+---
+
 ## How to Check Your Property's Flood Status
 
 ### Option 1: NestCheck (free, instant)

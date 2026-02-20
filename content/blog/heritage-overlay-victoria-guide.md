@@ -28,6 +28,14 @@ A property in a heritage precinct might be classified as:
 
 Your classification matters enormously for what you can and can't do.
 
+
+---
+
+> **🏡 Check any Victorian address instantly — free.**
+> [Get your NestCheck property report](https://nestcheck.com.au) covering climate risk, crime stats, schools, transport, and planning overlays in 30 seconds.
+
+---
+
 ## What You Can't Do (Without a Permit)
 
 Under a heritage overlay, you generally need a planning permit to:

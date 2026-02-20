@@ -27,6 +27,14 @@ Here's what the premiums look like in practice:
 
 These premiums exist because demand for spots in high-performing government schools far exceeds supply. The only guaranteed path to enrolment is living in the designated neighbourhood zone. Private school fees of $20,000-$40,000 per year suddenly make a $100,000 property premium look like a bargain.
 
+
+---
+
+> **🏡 Check any Victorian address instantly — free.**
+> [Get your NestCheck property report](https://nestcheck.com.au) covering climate risk, crime stats, schools, transport, and planning overlays in 30 seconds.
+
+---
+
 ## How School Zones Work in Victoria
 
 The Victorian Government introduced designated neighbourhood boundaries for government schools in 2021. Every government school has a defined zone, and students living within that zone have priority enrolment. Students outside the zone can still apply, but there's no guarantee of a place.

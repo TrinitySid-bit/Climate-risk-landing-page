@@ -30,6 +30,14 @@ Not all crime is equal when it comes to personal safety. The CSA breaks Victoria
 
 💡 **Key insight:** A suburb with high total crime numbers might actually be very safe to live in if the majority of offences are drug possession or public order incidents concentrated in a commercial strip. Always look at the breakdown, not just the headline number.
 
+
+---
+
+> **🏡 Check any Victorian address instantly — free.**
+> [Get your NestCheck property report](https://nestcheck.com.au) covering climate risk, crime stats, schools, transport, and planning overlays in 30 seconds.
+
+---
+
 ## The Floor Factor: Why Apartments Are Different
 
 If you're buying an apartment, suburb-level crime statistics need additional context. Property crimes like burglary are significantly less likely for higher-floor units — a ground-floor apartment is far more vulnerable than a 15th-floor unit in the same building. NestCheck's premium reports factor in floor level when scoring crime risk for apartments.

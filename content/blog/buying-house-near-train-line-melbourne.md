@@ -26,6 +26,14 @@ The sweet spot is **200-500 metres** — close enough to walk to the station in 
 
 Premium lines like the Sandringham line (running through affluent bayside suburbs) command higher proximity premiums than lines running through less desirable corridors.
 
+
+---
+
+> **🏡 Check any Victorian address instantly — free.**
+> [Get your NestCheck property report](https://nestcheck.com.au) covering climate risk, crime stats, schools, transport, and planning overlays in 30 seconds.
+
+---
+
 ## The Genuine Benefits
 
 ### Commute convenience
