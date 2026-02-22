@@ -38,6 +38,11 @@ export default function Home() {
 
   const openCheckout = (addr?: string) => {
     if (addr) setAddress(addr)
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'premium_checkout_opened', {
+        event_category: 'checkout',
+      });
+    }
     setIsModalOpen(true)
   }
 
@@ -131,6 +136,12 @@ export default function Home() {
       })
       
       if (response.ok) {
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'free_report_requested', {
+            event_category: 'reports',
+            event_label: freeAddress,
+          });
+        }
         setFreeSuccess(true)
         setFreeAddress('')
         setFreeEmail('')
@@ -157,7 +168,7 @@ export default function Home() {
           <p className="text-white font-bold text-lg md:text-xl mb-1">🏠 ATTENTION Victorians: Get a FREE Property Report!</p>
           <p className="text-green-100 text-sm mb-2">Planning zones, schools, hospitals, transport, parks, trails, EV chargers, childcare & more - completely free. No credit card required.</p>
           <p className="text-yellow-200 text-xs font-semibold mb-3">🆕 NOW WITH 1,000,000+ DATA POINTS: Planning zones, electorates, water & fire authorities!</p>
-          <button onClick={() => setShowFreeForm(true)} className="bg-white text-[#16a34a] px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition shadow-lg">Get Your FREE Report →</button>
+          <button onClick={() => { setShowFreeForm(true); if (typeof window !== 'undefined' && (window as any).gtag) { (window as any).gtag('event', 'free_form_opened', { event_category: 'engagement' }); } }} className="bg-white text-[#16a34a] px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition shadow-lg">Get Your FREE Report →</button>
         </div>
       </div>
 

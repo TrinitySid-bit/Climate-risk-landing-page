@@ -140,6 +140,13 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
         body: JSON.stringify({ address, floor, email, promo_code: promoCode }),
       });
       if (r.ok) {
+        // GA4 tracking - promo report
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'promo_report_requested', {
+            event_category: 'reports',
+            event_label: promoCode,
+          });
+        }
         setPromoSuccess(true);
       } else {
         const data = await r.json();
@@ -173,6 +180,16 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
         setError(data.error);
         setLoading(false);
         return;
+      }
+
+      // GA4 tracking - premium checkout started
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'premium_checkout_started', {
+          event_category: 'checkout',
+          event_label: address,
+          value: 29.99,
+          currency: 'AUD',
+        });
       }
 
       window.location.href = data.url;
