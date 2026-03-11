@@ -1,7 +1,22 @@
+'use client'
 import Link from 'next/link'
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 function SuccessContent() {
+  const searchParams = useSearchParams()
+  const sessionId = searchParams.get('session_id')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'purchase', {
+        currency: 'AUD',
+        value: 29.99,
+        transaction_id: sessionId || Date.now().toString(),
+      })
+    }
+  }, [sessionId])
+
   return (
     <main className="min-h-screen bg-[#0c1929] flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-2xl p-8 text-center">
