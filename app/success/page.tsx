@@ -1,4 +1,5 @@
 'use client'
+
 import Link from 'next/link'
 import { Suspense, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -8,11 +9,20 @@ function SuccessContent() {
   const sessionId = searchParams.get('session_id')
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
+    // Fire GA4 purchase event once on load
+    if (typeof window !== 'undefined' && (window as any).gtag && sessionId) {
       (window as any).gtag('event', 'purchase', {
-        currency: 'AUD',
+        transaction_id: sessionId,
         value: 29.99,
-        transaction_id: sessionId || Date.now().toString(),
+        currency: 'AUD',
+        items: [
+          {
+            item_id: 'nestcheck_premium',
+            item_name: 'NestCheck Premium Property Report',
+            price: 29.99,
+            quantity: 1,
+          },
+        ],
       })
     }
   }, [sessionId])

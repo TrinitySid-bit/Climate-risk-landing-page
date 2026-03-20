@@ -182,17 +182,26 @@ export default function CheckoutModal({ isOpen, onClose, initialAddress = '' }: 
         return;
       }
 
-      // GA4 tracking - premium checkout started
+      // GA4 tracking - fire event, then redirect only after event is sent
+      // event_callback ensures redirect happens after GA4 receives the event
+      // setTimeout is a fallback in case GA4 is slow or blocked
+      const stripeUrl = data.url;
+      const redirectToStripe = () => { window.location.href = stripeUrl; };
+
       if (typeof window !== 'undefined' && (window as any).gtag) {
         (window as any).gtag('event', 'premium_checkout_started', {
           event_category: 'checkout',
           event_label: address,
           value: 29.99,
           currency: 'AUD',
+          event_callback: redirectToStripe,
         });
+        // Fallback: redirect after 500ms even if gtag callback never fires
+        setTimeout(redirectToStripe, 500);
+      } else {
+        redirectToStripe();
       }
 
-      window.location.href = data.url;
     } catch (err) {
       setError('Something went wrong. Please try again.');
       setLoading(false);
