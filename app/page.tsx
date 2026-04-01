@@ -175,16 +175,95 @@ export default function Home() {
       {/* FREE REPORT MODAL */}
       {showFreeForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 relative">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 relative max-h-[90vh] overflow-y-auto">
             <button onClick={() => { setShowFreeForm(false); setFreeSuccess(false); }} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">×</button>
             
             {freeSuccess ? (
-              <div className="text-center py-8">
-                <div className="text-5xl mb-4">🎉</div>
-                <h3 className="text-2xl font-bold text-[#0c1929] mb-2">Report on its way!</h3>
-                <p className="text-slate-600 mb-4">Check your email in the next few minutes.</p>
-                <p className="text-sm text-slate-500">Want the full picture with crime & climate data?</p>
-                <button onClick={() => { setShowFreeForm(false); setFreeSuccess(false); openCheckout(); }} className="mt-4 bg-[#22c55e] text-white px-6 py-2 rounded-lg font-bold hover:bg-[#16a34a] transition">Upgrade to Premium - $29.99</button>
+              <div className="py-2">
+                {/* Success header */}
+                <div className="text-center mb-5">
+                  <div className="text-4xl mb-2">📬</div>
+                  <h3 className="text-xl font-bold text-[#0c1929] mb-1">Report on its way!</h3>
+                  <p className="text-slate-500 text-sm">Check your inbox in the next few minutes.</p>
+                </div>
+
+                {/* Locked premium teaser */}
+                <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 mb-4">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">🔒 Not in your free report</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🔥</span>
+                        <span className="text-sm font-semibold text-slate-700">Bushfire Risk Score</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-16 h-5 bg-slate-200 rounded" style={{filter: 'blur(3px)'}} />
+                        <span className="text-slate-400 text-xs">🔒</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🌊</span>
+                        <span className="text-sm font-semibold text-slate-700">Flood Zone Risk</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-16 h-5 bg-slate-200 rounded" style={{filter: 'blur(3px)'}} />
+                        <span className="text-slate-400 text-xs">🔒</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🛡️</span>
+                        <span className="text-sm font-semibold text-slate-700">Crime & Safety Score</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-16 h-5 bg-slate-200 rounded" style={{filter: 'blur(3px)'}} />
+                        <span className="text-slate-400 text-xs">🔒</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📈</span>
+                        <span className="text-sm font-semibold text-slate-700">10-Year Crime Trend</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-16 h-5 bg-slate-200 rounded" style={{filter: 'blur(3px)'}} />
+                        <span className="text-slate-400 text-xs">🔒</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">⛈️</span>
+                        <span className="text-sm font-semibold text-slate-700">Storm Risk Rating</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-16 h-5 bg-slate-200 rounded" style={{filter: 'blur(3px)'}} />
+                        <span className="text-slate-400 text-xs">🔒</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Warning nudge */}
+                <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-4 text-xs text-amber-800">
+                  <strong>⚠️ Did you know?</strong> Agents aren't required to disclose bushfire zones, flood risks, or crime rates. This is the data they won't show you.
+                </div>
+
+                {/* CTA */}
+                <button
+                  onClick={() => { setShowFreeForm(false); setFreeSuccess(false); openCheckout(); }}
+                  className="w-full bg-[#22c55e] text-white py-3.5 rounded-xl font-bold text-base hover:bg-[#16a34a] transition shadow-md"
+                >
+                  Unlock Full Report — $29.99
+                </button>
+                <p className="text-center text-xs text-slate-400 mt-2">One-time payment · No subscription</p>
+
+                <button
+                  onClick={() => { setShowFreeForm(false); setFreeSuccess(false); }}
+                  className="w-full text-slate-400 text-xs mt-3 hover:text-slate-600 transition py-1"
+                >
+                  No thanks, just the free report
+                </button>
               </div>
             ) : (
               <>
@@ -596,7 +675,3 @@ export default function Home() {
     </main>
   )
 }
-
-
-
-
